@@ -12,7 +12,7 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle'
 
 group = 'github.pitbox46'
-version = '1.0.0'
+version = '1.16.5-1.0.0'
 archivesBaseName = 'hiddennames'
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
