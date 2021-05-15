@@ -12,6 +12,8 @@ public class ModCommands {
         LiteralCommandNode<CommandSource> cmdTut = dispatcher.register(
                 Commands.literal(HiddenNames.MODID)
                         .then(CommandSetVisible.register(dispatcher))
+                        .then(CommandSetDefault.register(dispatcher))
+                        .then(CommandSetName.register(dispatcher))
         );
 
         dispatcher.register(Commands.literal("hiddennames").redirect(cmdTut));

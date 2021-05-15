@@ -7,15 +7,15 @@ public class Config {
 
     public static ForgeConfigSpec SERVER_CONFIG;
 
-    public static ForgeConfigSpec.BooleanValue NAMES_VISIBLE;
+    public static ForgeConfigSpec.BooleanValue DEFAULT_VISIBLE;
 
     static {
         ForgeConfigSpec.Builder SERVER_BUILDER = new ForgeConfigSpec.Builder();
 
         SERVER_BUILDER.comment("General Settings").push(CATEGORY_GENERAL);
 
-        NAMES_VISIBLE = SERVER_BUILDER.comment("Player nameplates are visible")
-                .define("names_visible", true);
+        DEFAULT_VISIBLE = SERVER_BUILDER.comment("Default name visibility")
+                .define("default_visible", true);
 
         SERVER_BUILDER.pop();
         SERVER_CONFIG = SERVER_BUILDER.build();

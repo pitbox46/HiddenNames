@@ -17,14 +17,15 @@ public class PacketHandler {
     public static void init() {
         CHANNEL.registerMessage(
                 ID++,
-                BooleanPacket.class,
+                NamePacket.class,
                 (msg, pb) -> {
-                    pb.writeEnumValue(msg.type);
+                    pb.writeUniqueId(msg.uuid);
                     pb.writeBoolean(msg.bool);
+                    pb.writeTextComponent(msg.name);
                 },
-                pb -> new BooleanPacket(pb.readEnumValue(BooleanPacket.Type.class), pb.readBoolean()),
+                pb -> new NamePacket(pb.readUniqueId(), pb.readBoolean(), pb.readTextComponent()),
                 (msg, ctx) -> {
-                    ctx.get().enqueueWork(() -> HiddenNames.PROXY.handleNameplateChange(ctx.get(), msg.bool));
+                    ctx.get().enqueueWork(() -> HiddenNames.PROXY.handleNameplateChange(ctx.get(), msg.uuid, msg.bool, msg.name));
                     ctx.get().setPacketHandled(true);
                 });
     }
