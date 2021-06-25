@@ -1,5 +1,6 @@
 package github.pitbox46.hiddennames.network;
 
+import github.pitbox46.hiddennames.utils.AnimatedStringTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -19,5 +20,5 @@ public class CommonProxy {
     }
 
     //Client
-    public void handleNameplateChange(NetworkEvent.Context ctx, UUID uuid, boolean bool, ITextComponent name) {}
+    public void handleNameplateChange(NetworkEvent.Context ctx, UUID uuid, AnimatedStringTextComponent name) {}
 }

@@ -1,9 +1,13 @@
 package github.pitbox46.hiddennames.network;
 
 import github.pitbox46.hiddennames.HiddenNames;
+import github.pitbox46.hiddennames.utils.AnimatedStringTextComponent;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
+
+import java.util.Optional;
 
 public class PacketHandler {
     private static final String PROTOCOL_VERSION = "3.2.1";
@@ -20,12 +24,16 @@ public class PacketHandler {
                 NamePacket.class,
                 (msg, pb) -> {
                     pb.writeUniqueId(msg.uuid);
-                    pb.writeBoolean(msg.bool);
                     pb.writeTextComponent(msg.name);
+                    pb.writeEnumValue(msg.anime);
                 },
-                pb -> new NamePacket(pb.readUniqueId(), pb.readBoolean(), pb.readTextComponent()),
+                pb -> new NamePacket(pb.readUniqueId(), pb.readTextComponent(), pb.readEnumValue(AnimatedStringTextComponent.Animation.class)),
                 (msg, ctx) -> {
-                    ctx.get().enqueueWork(() -> HiddenNames.PROXY.handleNameplateChange(ctx.get(), msg.uuid, msg.bool, msg.name));
+                    ctx.get().enqueueWork(() -> HiddenNames.PROXY.handleNameplateChange(
+                            ctx.get(),
+                            msg.uuid,
+                            (AnimatedStringTextComponent) new AnimatedStringTextComponent(msg.name.getString(), msg.anime).setStyle(msg.name.getStyle())
+                    ));
                     ctx.get().setPacketHandled(true);
                 });
     }

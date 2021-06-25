@@ -1,3 +1,18 @@
+June 25 2021 pitbox46
+    -Fixed CYCLE animation
+
+June 11 2021 pitbox46
+    -Added RAINBOW animation
+    -Added CYCLE animation
+    -Added some extra defensiveness to code
+
+May 30 2021 pitbox46
+    -Added BREATH animation
+    -Changed commands
+
+May 27 2021 pitbox46
+    -Updated to Forge 36.1.24
+
 May 14 2021 pitbox46
     -Individual visibility toggle
     -Ability to change displayed names (including colors)

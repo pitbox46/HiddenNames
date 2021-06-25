@@ -7,7 +7,7 @@ import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import github.pitbox46.hiddennames.CSVUtils;
+import github.pitbox46.hiddennames.utils.CSVUtils;
 import github.pitbox46.hiddennames.HiddenNames;
 import github.pitbox46.hiddennames.network.PacketHandler;
 import net.minecraft.command.CommandSource;
@@ -30,9 +30,9 @@ public class CommandSetVisible implements Command<CommandSource> {
     @Override
     public int run(CommandContext<CommandSource> context) throws CommandSyntaxException {
         for(GameProfile profile: GameProfileArgument.getGameProfiles(context, "player")) {
-            CSVUtils.replaceEntry(HiddenNames.config, profile.getName(),4, String.valueOf(BoolArgumentType.getBool(context, "boolean")));
+            CSVUtils.replaceEntry(HiddenNames.dataFile, profile.getName(),4, String.valueOf(BoolArgumentType.getBool(context, "boolean")));
         }
-        CSVUtils.updateClients(HiddenNames.config, PacketHandler.CHANNEL);
+        CSVUtils.updateClients(HiddenNames.dataFile, PacketHandler.CHANNEL);
         return 0;
     }
 }

@@ -1,4 +1,4 @@
-package github.pitbox46.hiddennames;
+package github.pitbox46.hiddennames.utils;
 
 import github.pitbox46.hiddennames.network.NamePacket;
 import net.minecraft.util.text.StringTextComponent;
@@ -94,7 +94,11 @@ public class CSVUtils {
             while(row != null && !row.isEmpty()) {
                 String[] data = row.split(",");
                 if(!data[0].equals("UUID")) {
-                    channel.send(PacketDistributor.ALL.noArg(), new NamePacket(UUID.fromString(data[0]), data[4].equals("true"), (new StringTextComponent(data[2])).mergeStyle(TextFormatting.getValueByName(data[3]))));
+                    channel.send(PacketDistributor.ALL.noArg(), new NamePacket(
+                            UUID.fromString(data[0]),
+                            new StringTextComponent(data[2]).mergeStyle(TextFormatting.getValueByName(data[3])),
+                            Boolean.parseBoolean(data[4]) ? AnimatedStringTextComponent.Animation.valueOf(data[5]) : AnimatedStringTextComponent.Animation.HIDDEN)
+                    );
                 }
                 row = csvReader.readLine();
             }
