@@ -14,6 +14,7 @@ public class ModCommands {
                         .then(CommandSetVisible.register(dispatcher))
                         .then(CommandSetDefault.register(dispatcher))
                         .then(CommandSetName.register(dispatcher))
+                        .then(CommandBlocksHide.register(dispatcher))
         );
 
         dispatcher.register(Commands.literal("hiddennames").redirect(cmdTut));

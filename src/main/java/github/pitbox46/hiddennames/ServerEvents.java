@@ -1,48 +1,43 @@
 package github.pitbox46.hiddennames;
 
+import github.pitbox46.hiddennames.network.BlocksHidePacket;
 import github.pitbox46.hiddennames.network.PacketHandler;
-import github.pitbox46.hiddennames.utils.CSVUtils;
+import github.pitbox46.hiddennames.utils.AnimatedStringTextComponent;
+import github.pitbox46.hiddennames.utils.CSVHandler;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.network.PacketDistributor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ServerEvents {
     private static final Logger LOGGER = LogManager.getLogger();
 
     @SubscribeEvent
     public static void onJoinServer(PlayerEvent.PlayerLoggedInEvent event) {
-        try {
-            BufferedReader csvReader = new BufferedReader(new FileReader(HiddenNames.dataFile));
-            String row = csvReader.readLine();
-            while(row != null) {
-                String[] data = row.split(",");
-                if(data[0].equals(event.getPlayer().getUniqueID().toString())) {
-                    csvReader.close();
-                    CSVUtils.updateClients(HiddenNames.dataFile, PacketHandler.CHANNEL);
-                    return;
-                }
-                row = csvReader.readLine();
+        CSVObject csvObject = CSVObject.read(HiddenNames.dataFile);
+        List<List<String>> table = CSVObject.byColumnToByRow(csvObject.getTable());
+        for(List<String> row: table) {
+            if(row.get(csvObject.getHeader().indexOf(CSVHandler.Columns.UUID.name)).equals(event.getPlayer().getUniqueID().toString())) {
+                CSVHandler.updateClients(HiddenNames.dataFile, PacketHandler.CHANNEL);
+                return;
             }
-            csvReader.close();
-
-            FileWriter csvWriter = new FileWriter(HiddenNames.dataFile,true);
-            csvWriter.append("\n")
-                    .append(event.getPlayer().getUniqueID().toString()).append(",")
-                    .append(event.getPlayer().getName().getString()).append(",")
-                    .append(event.getPlayer().getDisplayName().getString()).append(",")
-                    .append(TextFormatting.WHITE.getFriendlyName()).append(",")
-                    .append(Config.DEFAULT_VISIBLE.get().toString()).append(",")
-                    .append("NONE");
-
-            csvWriter.close();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+        List<String> newLine = new ArrayList<>();
+        newLine.add(event.getPlayer().getUniqueID().toString());
+        newLine.add(event.getPlayer().getName().getString());
+        newLine.add(event.getPlayer().getDisplayName().getString());
+        newLine.add(TextFormatting.WHITE.getFriendlyName());
+        newLine.add(Config.DEFAULT_VISIBLE.get().toString());
+        newLine.add(AnimatedStringTextComponent.Animation.NONE.name());
+        table.add(newLine);
 
-        CSVUtils.updateClients(HiddenNames.dataFile, PacketHandler.CHANNEL);
+        CSVObject.write(HiddenNames.dataFile, new CSVObject(table, csvObject.getHeader()));
+        CSVHandler.updateClients(HiddenNames.dataFile, PacketHandler.CHANNEL);
+        PacketHandler.CHANNEL.send(PacketDistributor.ALL.noArg(), new BlocksHidePacket(Config.BLOCKS_HIDE.get()));
     }
 }

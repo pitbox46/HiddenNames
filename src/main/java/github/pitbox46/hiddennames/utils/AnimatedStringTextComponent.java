@@ -1,6 +1,5 @@
 package github.pitbox46.hiddennames.utils;
 
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
 public class AnimatedStringTextComponent extends StringTextComponent {

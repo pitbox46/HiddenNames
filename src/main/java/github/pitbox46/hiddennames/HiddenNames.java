@@ -4,15 +4,18 @@ import github.pitbox46.hiddennames.commands.ModCommands;
 import github.pitbox46.hiddennames.network.ClientProxy;
 import github.pitbox46.hiddennames.network.CommonProxy;
 import github.pitbox46.hiddennames.utils.AnimatedStringTextComponent;
+import github.pitbox46.hiddennames.utils.CSVHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.network.play.NetworkPlayerInfo;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ColorHelper;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceContext;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.*;
 import net.minecraft.world.storage.FolderName;
 import net.minecraftforge.api.distmarker.Dist;
@@ -21,7 +24,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.Event;
-import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -33,8 +35,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
 
@@ -58,14 +58,12 @@ public class HiddenNames {
     public void onServerStarting(FMLServerStartingEvent event) {
         Path modFolder = event.getServer().func_240776_a_(new FolderName("hiddennames"));
         dataFile = new File(FileUtils.getOrCreateDirectory(modFolder, "hiddennames").toFile(), "data.csv");
-        try {
-            if(dataFile.createNewFile()) {
-                FileWriter configWriter = new FileWriter(dataFile);
-                configWriter.write("UUID,Real Name,Displayed Name,Name Color,Name Visible,Animation");
-                configWriter.close();
+        if(!dataFile.exists()) {
+            Map<String, List<String>> table = new LinkedHashMap<>();
+            for (CSVHandler.Columns c : CSVHandler.Columns.values()) {
+                table.put(c.name, new ArrayList<>());
             }
-        } catch(IOException e) {
-            LOGGER.warn(e.getMessage());
+            CSVObject.write(dataFile, new CSVObject(table));
         }
     }
 
@@ -92,12 +90,22 @@ public class HiddenNames {
 
         @SubscribeEvent
         public static void onRenderNameplate(RenderNameplateEvent event) {
-            double tick = Minecraft.getInstance().player.world.getGameTime() + event.getPartialTicks();
+            PlayerEntity player = Minecraft.getInstance().player;
+            double tick = player.world.getGameTime() + event.getPartialTicks();
 
             if (event.getEntity() instanceof PlayerEntity) {
                 AnimatedStringTextComponent displayName = ClientProxy.getDisplayName(event.getEntity().getUniqueID());
                 if (displayName != null) {
                     AnimatedStringTextComponent.Animation anime = displayName.getAnimation();
+
+                    if(anime != AnimatedStringTextComponent.Animation.HIDDEN && ClientProxy.doBlocksHide()) {
+                        Vector3d vector3d = new Vector3d(player.getPosX(), player.getPosYEye(), player.getPosZ());
+                        Vector3d vector3d1 = new Vector3d(event.getEntity().getPosX(), event.getEntity().getPosYHeight(1) + 0.5F, event.getEntity().getPosZ());
+                        if(player.world.rayTraceBlocks(new RayTraceContext(vector3d, vector3d1, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, player)).getType() != RayTraceResult.Type.MISS) {
+                            event.setResult(Event.Result.DENY);
+                            return;
+                        }
+                    }
 
                     switch (anime) {
                         case HIDDEN: {

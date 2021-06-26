@@ -3,11 +3,8 @@ package github.pitbox46.hiddennames.network;
 import github.pitbox46.hiddennames.HiddenNames;
 import github.pitbox46.hiddennames.utils.AnimatedStringTextComponent;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
-
-import java.util.Optional;
 
 public class PacketHandler {
     private static final String PROTOCOL_VERSION = "3.2.1";
@@ -33,6 +30,20 @@ public class PacketHandler {
                             ctx.get(),
                             msg.uuid,
                             (AnimatedStringTextComponent) new AnimatedStringTextComponent(msg.name.getString(), msg.anime).setStyle(msg.name.getStyle())
+                    ));
+                    ctx.get().setPacketHandled(true);
+                });
+        CHANNEL.registerMessage(
+                ID++,
+                BlocksHidePacket.class,
+                (msg, pb) -> {
+                    pb.writeBoolean(msg.blocksHide);
+                },
+                pb -> new BlocksHidePacket(pb.readBoolean()),
+                (msg, ctx) -> {
+                    ctx.get().enqueueWork(() -> HiddenNames.PROXY.handleBlocksHideUpdate(
+                            ctx.get(),
+                            msg.blocksHide
                     ));
                     ctx.get().setPacketHandled(true);
                 });

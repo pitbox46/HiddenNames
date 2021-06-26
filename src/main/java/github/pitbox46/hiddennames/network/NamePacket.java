@@ -3,7 +3,6 @@ package github.pitbox46.hiddennames.network;
 import github.pitbox46.hiddennames.utils.AnimatedStringTextComponent;
 import net.minecraft.util.text.ITextComponent;
 
-import java.awt.*;
 import java.util.UUID;
 
 public class NamePacket {

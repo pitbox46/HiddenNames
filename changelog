@@ -1,5 +1,7 @@
 June 25 2021 pitbox46
     -Fixed CYCLE animation
+    -Changed file system to use CSVObjects from Chunk Profiler
+    -Added option to allow blocks to hide nameplates
 
 June 11 2021 pitbox46
     -Added RAINBOW animation
