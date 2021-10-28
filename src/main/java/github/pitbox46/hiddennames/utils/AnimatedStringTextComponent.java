@@ -1,8 +1,8 @@
 package github.pitbox46.hiddennames.utils;
 
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.network.chat.TextComponent;
 
-public class AnimatedStringTextComponent extends StringTextComponent {
+public class AnimatedStringTextComponent extends TextComponent {
     public enum Animation {
         NONE,
         HIDDEN,
@@ -25,7 +25,7 @@ public class AnimatedStringTextComponent extends StringTextComponent {
     }
 
     @Override
-    public AnimatedStringTextComponent copyRaw() {
+    public AnimatedStringTextComponent plainCopy() {
         return new AnimatedStringTextComponent(this.msg, this.anime);
     }
 

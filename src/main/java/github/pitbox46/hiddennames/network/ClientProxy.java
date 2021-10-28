@@ -2,9 +2,9 @@ package github.pitbox46.hiddennames.network;
 
 import github.pitbox46.hiddennames.utils.AnimatedStringTextComponent;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,9 +22,9 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void handleNameplateChange(NetworkEvent.Context ctx, UUID uuid, AnimatedStringTextComponent name) {
         displayNames.put(uuid, name);
-        PlayerEntity player;
-        if(Minecraft.getInstance().world != null) {
-            player = Minecraft.getInstance().world.getPlayerByUuid(uuid);
+        Player player;
+        if(Minecraft.getInstance().level != null) {
+            player = Minecraft.getInstance().level.getPlayerByUUID(uuid);
             if(player != null)
                 player.refreshDisplayName();
         }

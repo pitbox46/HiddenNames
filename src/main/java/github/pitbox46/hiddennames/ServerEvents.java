@@ -4,10 +4,10 @@ import github.pitbox46.hiddennames.network.BlocksHidePacket;
 import github.pitbox46.hiddennames.network.PacketHandler;
 import github.pitbox46.hiddennames.utils.AnimatedStringTextComponent;
 import github.pitbox46.hiddennames.utils.CSVHandler;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.ChatFormatting;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,16 +22,16 @@ public class ServerEvents {
         CSVObject csvObject = CSVObject.read(HiddenNames.dataFile);
         List<List<String>> table = CSVObject.byColumnToByRow(csvObject.getTable());
         for(List<String> row: table) {
-            if(row.get(csvObject.getHeader().indexOf(CSVHandler.Columns.UUID.name)).equals(event.getPlayer().getUniqueID().toString())) {
+            if(row.get(csvObject.getHeader().indexOf(CSVHandler.Columns.UUID.name)).equals(event.getPlayer().getUUID().toString())) {
                 CSVHandler.updateClients(HiddenNames.dataFile, PacketHandler.CHANNEL);
                 return;
             }
         }
         List<String> newLine = new ArrayList<>();
-        newLine.add(event.getPlayer().getUniqueID().toString());
+        newLine.add(event.getPlayer().getUUID().toString());
         newLine.add(event.getPlayer().getName().getString());
         newLine.add(event.getPlayer().getDisplayName().getString());
-        newLine.add(TextFormatting.WHITE.getFriendlyName());
+        newLine.add(ChatFormatting.WHITE.getName());
         newLine.add(Config.DEFAULT_VISIBLE.get().toString());
         newLine.add(AnimatedStringTextComponent.Animation.NONE.name());
         table.add(newLine);

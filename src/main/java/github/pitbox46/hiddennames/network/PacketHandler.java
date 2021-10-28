@@ -2,9 +2,9 @@ package github.pitbox46.hiddennames.network;
 
 import github.pitbox46.hiddennames.HiddenNames;
 import github.pitbox46.hiddennames.utils.AnimatedStringTextComponent;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.fmllegacy.network.NetworkRegistry;
+import net.minecraftforge.fmllegacy.network.simple.SimpleChannel;
 
 public class PacketHandler {
     private static final String PROTOCOL_VERSION = "3.2.1";
@@ -20,11 +20,11 @@ public class PacketHandler {
                 ID++,
                 NamePacket.class,
                 (msg, pb) -> {
-                    pb.writeUniqueId(msg.uuid);
-                    pb.writeTextComponent(msg.name);
-                    pb.writeEnumValue(msg.anime);
+                    pb.writeUUID(msg.uuid);
+                    pb.writeComponent(msg.name);
+                    pb.writeEnum(msg.anime);
                 },
-                pb -> new NamePacket(pb.readUniqueId(), pb.readTextComponent(), pb.readEnumValue(AnimatedStringTextComponent.Animation.class)),
+                pb -> new NamePacket(pb.readUUID(), pb.readComponent(), pb.readEnum(AnimatedStringTextComponent.Animation.class)),
                 (msg, ctx) -> {
                     ctx.get().enqueueWork(() -> HiddenNames.PROXY.handleNameplateChange(
                             ctx.get(),

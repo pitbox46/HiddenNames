@@ -2,10 +2,10 @@ package github.pitbox46.hiddennames.utils;
 
 import github.pitbox46.hiddennames.CSVObject;
 import github.pitbox46.hiddennames.network.NamePacket;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.fml.network.PacketDistributor;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
+import net.minecraftforge.fmllegacy.network.simple.SimpleChannel;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -60,7 +60,7 @@ public class CSVHandler {
         for(List<String> row: table) {
             channel.send(PacketDistributor.ALL.noArg(), new NamePacket(
                             UUID.fromString(row.get(csvObject.getHeader().indexOf(Columns.UUID.name))),
-                            new StringTextComponent(row.get(csvObject.getHeader().indexOf(Columns.DISPLAY_NAME.name))).mergeStyle(TextFormatting.getValueByName(row.get(csvObject.getHeader().indexOf(Columns.NAME_COLOR.name)))),
+                            new TextComponent(row.get(csvObject.getHeader().indexOf(Columns.DISPLAY_NAME.name))).withStyle(ChatFormatting.getByName(row.get(csvObject.getHeader().indexOf(Columns.NAME_COLOR.name)))),
                             Boolean.parseBoolean(row.get(csvObject.getHeader().indexOf(Columns.NAME_VISIBLE.name))) ? AnimatedStringTextComponent.Animation.valueOf(row.get(csvObject.getHeader().indexOf(Columns.ANIMATION.name))) : AnimatedStringTextComponent.Animation.HIDDEN)
                     );
         }
