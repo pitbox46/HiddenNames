@@ -1,38 +1,34 @@
 package github.pitbox46.hiddennames.commands;
 
-import com.mojang.authlib.GameProfile;
-import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
-import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import github.pitbox46.hiddennames.HiddenNames;
-import github.pitbox46.hiddennames.network.PacketHandler;
-import github.pitbox46.hiddennames.utils.CSVHandler;
+import github.pitbox46.hiddennames.data.Animations;
+import github.pitbox46.hiddennames.data.NameData;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.commands.arguments.GameProfileArgument;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.world.entity.player.Player;
 
-public class CommandSetVisible implements Command<CommandSourceStack> {
-
-    private static final CommandSetVisible CMD = new CommandSetVisible();
-
+public class CommandSetVisible {
     public static ArgumentBuilder<CommandSourceStack, ?> register(CommandDispatcher<CommandSourceStack> dispatcher) {
         return Commands
                 .literal("nameplateVisible")
                 .requires(cs -> cs.hasPermission(2))
-                .then(Commands.argument("player", GameProfileArgument.gameProfile())
+                .then(Commands.argument("player", EntityArgument.players())
                         .then(Commands.argument("boolean", BoolArgumentType.bool())
-                                .executes(CMD)));
-    }
-
-    @Override
-    public int run(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
-        for(GameProfile profile: GameProfileArgument.getGameProfiles(context, "player")) {
-            CSVHandler.replaceEntry(HiddenNames.dataFile, profile.getName(), CSVHandler.Columns.NAME_VISIBLE, String.valueOf(BoolArgumentType.getBool(context, "boolean")));
-        }
-        CSVHandler.updateClients(HiddenNames.dataFile, PacketHandler.CHANNEL);
-        return 0;
+                                .executes(ctx -> {
+                                    for (Player player : EntityArgument.getPlayers(ctx, "players")) {
+                                        boolean flag = ctx.getArgument("boolean", Boolean.class);
+                                        NameData data = NameData.DATA.get(player.getUUID());
+                                        if (!flag) {
+                                            data.setAnimation(Animations.HIDDEN);
+                                        } else if (data.getAnimation() == Animations.HIDDEN) {
+                                            data.setAnimation(Animations.NULL);
+                                        }
+                                    }
+                                    NameData.sendSyncData();
+                                    return 0;
+                                })));
     }
 }

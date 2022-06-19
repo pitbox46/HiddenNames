@@ -19,7 +19,7 @@ public class CommandSetDefault implements Command<CommandSourceStack> {
                 .literal("defaultVisible")
                 .requires(cs -> cs.hasPermission(2))
                 .then(Commands.argument("boolean", BoolArgumentType.bool())
-                .executes(CMD));
+                        .executes(CMD));
     }
 
     @Override

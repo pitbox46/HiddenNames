@@ -50,6 +50,11 @@ minecraft {
             }
         }
 
+        clientTwo {
+            parent runs.client
+            args '--username', 'Dev2'
+        }
+
         server {
             workingDirectory project.file('run')
 

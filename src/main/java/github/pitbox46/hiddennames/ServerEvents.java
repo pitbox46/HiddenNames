@@ -1,43 +1,41 @@
 package github.pitbox46.hiddennames;
 
+import github.pitbox46.hiddennames.data.NameData;
 import github.pitbox46.hiddennames.network.BlocksHidePacket;
 import github.pitbox46.hiddennames.network.PacketHandler;
-import github.pitbox46.hiddennames.utils.AnimatedStringTextComponent;
-import github.pitbox46.hiddennames.utils.CSVHandler;
-import net.minecraft.ChatFormatting;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fmllegacy.network.PacketDistributor;
+import net.minecraftforge.fmlserverevents.FMLServerStartingEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
 
 public class ServerEvents {
     private static final Logger LOGGER = LogManager.getLogger();
 
     @SubscribeEvent
-    public static void onJoinServer(PlayerEvent.PlayerLoggedInEvent event) {
-        CSVObject csvObject = CSVObject.read(HiddenNames.dataFile);
-        List<List<String>> table = CSVObject.byColumnToByRow(csvObject.getTable());
-        for(List<String> row: table) {
-            if(row.get(csvObject.getHeader().indexOf(CSVHandler.Columns.UUID.name)).equals(event.getPlayer().getUUID().toString())) {
-                CSVHandler.updateClients(HiddenNames.dataFile, PacketHandler.CHANNEL);
-                return;
-            }
-        }
-        List<String> newLine = new ArrayList<>();
-        newLine.add(event.getPlayer().getUUID().toString());
-        newLine.add(event.getPlayer().getName().getString());
-        newLine.add(event.getPlayer().getDisplayName().getString());
-        newLine.add(ChatFormatting.WHITE.getName());
-        newLine.add(Config.DEFAULT_VISIBLE.get().toString());
-        newLine.add(AnimatedStringTextComponent.Animation.NONE.name());
-        table.add(newLine);
+    public static void onServerStarting(FMLServerStartingEvent event) throws IOException {
+        HiddenNames.JSON = new JsonData(HiddenNames.MODID, "data.json", event.getServer());
+        HiddenNames.JSON.getOrCreateFile();
+        HiddenNames.JSON.readToData();
+    }
 
-        CSVObject.write(HiddenNames.dataFile, new CSVObject(table, csvObject.getHeader()));
-        CSVHandler.updateClients(HiddenNames.dataFile, PacketHandler.CHANNEL);
-        PacketHandler.CHANNEL.send(PacketDistributor.ALL.noArg(), new BlocksHidePacket(Config.BLOCKS_HIDE.get()));
+    @SubscribeEvent
+    public static void onJoinServer(PlayerEvent.PlayerLoggedInEvent event) {
+        Player player = event.getPlayer();
+        NameData.DATA.computeIfAbsent(player.getUUID(), uuid -> new NameData(player));
+        PacketHandler.CHANNEL.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) player), new BlocksHidePacket(Config.BLOCKS_HIDE.get()));
+        NameData.sendSyncData();
+    }
+
+    @SubscribeEvent
+    public static void onWorldSave(WorldEvent.Save event) throws IOException {
+        if (HiddenNames.JSON != null)
+            HiddenNames.JSON.saveToJson();
     }
 }
