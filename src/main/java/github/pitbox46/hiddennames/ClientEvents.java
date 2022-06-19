@@ -23,10 +23,12 @@ public class ClientEvents {
     @SubscribeEvent
     public static void onRenderNameplate(RenderNameplateEvent event) {
         Player localPlayer = Minecraft.getInstance().player;
-        double tick = localPlayer.level.getGameTime() + event.getPartialTick();
 
         if (event.getEntity() instanceof Player) {
             NameData nameData = NameData.DATA.get(event.getEntity().getUUID());
+
+            if(event.getEntity() == localPlayer && Config.SHOW_OWN.get() && !event.getEntity().isSpectator())
+                event.setResult(Event.Result.ALLOW);
 
             if (nameData == null)
                 return;
@@ -40,7 +42,7 @@ public class ClientEvents {
                 }
             }
             //The addition is an offset so each player doesn't have the same animation go at the same time
-            nameData.getAnimation().renderer().accept(event, Minecraft.getInstance().level.getGameTime() + event.getEntity().getId() * 21L);
+            nameData.getAnimation().renderer().accept(event, localPlayer.level.getGameTime() + event.getEntity().getId() * 21L);
         }
     }
 

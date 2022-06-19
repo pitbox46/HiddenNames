@@ -27,10 +27,10 @@ public class HiddenNames {
 
     public HiddenNames() {
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, Config.SERVER_CONFIG);
+        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Config.CLIENT_CONFIG);
         PROXY = DistExecutor.safeRunForDist(() -> ClientProxy::new, () -> CommonProxy::new);
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(ServerEvents.class);
-        ArgumentTypes.register("animation", AnimationArgument.class, new EmptyArgumentSerializer<>(AnimationArgument::animationArgument));
     }
 
     @SubscribeEvent

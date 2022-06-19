@@ -1,3 +1,11 @@
+June 19 2022 pitbox46
+    -Fix bug with animation not being deserialized properly
+    -Add config option to see your own nameplate in F5 mode
+
+June 18 2022 pitbox46
+    -Port to 1.17, 1.18
+    -Complete code rewrite
+
 June 25 2021 pitbox46
     -Fixed CYCLE animation
     -Changed file system to use CSVObjects from Chunk Profiler
