@@ -23,7 +23,6 @@ public class ClientEvents {
     @SubscribeEvent
     public static void onRenderNameplate(RenderNameplateEvent event) {
         Player localPlayer = Minecraft.getInstance().player;
-        double tick = localPlayer.level.getGameTime() + event.getPartialTicks();
 
         if (event.getEntity() instanceof Player) {
             NameData nameData = NameData.DATA.get(event.getEntity().getUUID());

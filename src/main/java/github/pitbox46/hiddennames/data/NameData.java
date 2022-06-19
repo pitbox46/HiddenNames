@@ -38,7 +38,7 @@ public class NameData {
     public static NameData deserialize(JsonObject json) {
         UUID uuid = UUID.fromString(json.getAsJsonPrimitive("uuid").getAsString());
         Component component = Component.Serializer.fromJson(json.get("displayName"));
-        Animation animation = Animations.getAnimation("animation");
+        Animation animation = Animations.getAnimation(json.getAsJsonPrimitive("animation").getAsString());
         return new NameData(uuid, component, animation);
     }
 
@@ -79,7 +79,7 @@ public class NameData {
     public JsonObject serialize(JsonObject json) {
         json.addProperty("uuid", uuid.toString());
         json.add("displayName", Component.Serializer.toJsonTree(displayName));
-        json.addProperty("animation", Animations.getKey(animation));
+        json.addProperty("animation", animation.key());
         return json;
     }
 }

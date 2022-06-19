@@ -1,3 +1,10 @@
+June 18 2022 pitbox46
+    -Bug fixes
+
+June 18 2022 pitbox46
+    -Major code rewrite
+    -Port to 1.17
+
 June 25 2021 pitbox46
     -Fixed CYCLE animation
     -Changed file system to use CSVObjects from Chunk Profiler
