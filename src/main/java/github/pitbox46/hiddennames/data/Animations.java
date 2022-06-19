@@ -68,12 +68,12 @@ public class Animations {
         int toNext = 80;
 
         Random rng = new Random(event.getEntity().getId());
-        IntStream stream = rng.ints(Long.MAX_VALUE, 0, 16777216);
+        IntStream stream = rng.ints();
 
         TextColor color1 = TextColor.fromRgb(stream.skip(tick / toNext).findFirst().orElseThrow());
-        TextColor color2 = TextColor.fromRgb(rng.nextInt(16777216));
+        TextColor color2 = TextColor.fromRgb(rng.nextInt());
 
-        MutableComponent newName = displayName.plainCopy();
+        MutableComponent newName = displayName.copy();
         newName.setStyle(newName.getStyle().withColor(blendColors(color1, color2, (float) (toNext - tick % toNext) / toNext)));
 
         event.setContent(newName);
@@ -95,14 +95,6 @@ public class Animations {
     @Nullable
     public static Animation getAnimationUnsafe(String key) {
         return ANIMATIONS.get(key);
-    }
-
-    public static String getKey(Animation animation) {
-        for (Map.Entry<String, Animation> entry : ANIMATIONS.entrySet()) {
-            if (entry.getValue().equals(animation))
-                return entry.getKey();
-        }
-        return "null";
     }
 
     public static Set<String> getKeys() {

@@ -1,3 +1,11 @@
+June 18 2022 pitbox46
+    -Bug fixes
+    -Add config option to see your own nametag in 3rd person view
+
+June 18 2022 pitbox46
+    -Port to 1.17, 1.18, 1.19
+    -Major code rewrite
+
 June 25 2021 pitbox46
     -Fixed CYCLE animation
     -Changed file system to use CSVObjects from Chunk Profiler

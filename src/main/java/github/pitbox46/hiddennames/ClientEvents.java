@@ -28,6 +28,9 @@ public class ClientEvents {
         if (event.getEntity() instanceof Player) {
             NameData nameData = NameData.DATA.get(event.getEntity().getUUID());
 
+            if(event.getEntity() == localPlayer && Config.SHOW_OWN.get() && !event.getEntity().isSpectator())
+                event.setResult(Event.Result.ALLOW);
+
             if (nameData == null)
                 return;
 

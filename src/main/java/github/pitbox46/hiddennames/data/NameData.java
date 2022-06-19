@@ -35,25 +35,11 @@ public class NameData {
         this.animation = animation;
     }
 
-    public static NameData deserialize(JsonObject json) {
-        UUID uuid = UUID.fromString(json.getAsJsonPrimitive("uuid").getAsString());
-        Component component = Component.Serializer.fromJson(json.get("displayName"));
-        Animation animation = Animations.getAnimation("animation");
-        return new NameData(uuid, component, animation);
-    }
-
     //TODO Consider only sending necessary packets rather than sending them all (only new players need all packets)
     public static void sendSyncData() {
         for (NameData data : DATA.values()) {
             PacketHandler.CHANNEL.send(PacketDistributor.ALL.noArg(), new NameDataSyncPacket(data));
         }
-    }
-
-    public static JsonArray deserializeAll() {
-        JsonArray array = new JsonArray();
-        for (NameData data : DATA.values())
-            array.add(data.serialize(new JsonObject()));
-        return array;
     }
 
     public UUID getUuid() {
@@ -79,7 +65,21 @@ public class NameData {
     public JsonObject serialize(JsonObject json) {
         json.addProperty("uuid", uuid.toString());
         json.add("displayName", Component.Serializer.toJsonTree(displayName));
-        json.addProperty("animation", Animations.getKey(animation));
+        json.addProperty("animation", animation.key());
         return json;
+    }
+
+    public static NameData deserialize(JsonObject json) {
+        UUID uuid = UUID.fromString(json.getAsJsonPrimitive("uuid").getAsString());
+        Component component = Component.Serializer.fromJson(json.get("displayName"));
+        Animation animation = Animations.getAnimation(json.getAsJsonPrimitive("animation").getAsString());
+        return new NameData(uuid, component, animation);
+    }
+
+    public static JsonArray deserializeAll() {
+        JsonArray array = new JsonArray();
+        for (NameData data : DATA.values())
+            array.add(data.serialize(new JsonObject()));
+        return array;
     }
 }
