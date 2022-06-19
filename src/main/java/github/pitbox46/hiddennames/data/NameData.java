@@ -7,7 +7,7 @@ import github.pitbox46.hiddennames.network.NameDataSyncPacket;
 import github.pitbox46.hiddennames.network.PacketHandler;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.fmllegacy.network.PacketDistributor;
+import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;

@@ -4,7 +4,7 @@ import github.pitbox46.hiddennames.data.NameData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 
 public class ClientProxy extends CommonProxy {
     private static boolean blocksHide = false;

@@ -11,7 +11,7 @@ import github.pitbox46.hiddennames.network.BlocksHidePacket;
 import github.pitbox46.hiddennames.network.PacketHandler;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraftforge.fmllegacy.network.PacketDistributor;
+import net.minecraftforge.network.PacketDistributor;
 
 public class CommandBlocksHide implements Command<CommandSourceStack> {
 

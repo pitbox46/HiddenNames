@@ -6,10 +6,10 @@ import github.pitbox46.hiddennames.network.PacketHandler;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fmllegacy.network.PacketDistributor;
-import net.minecraftforge.fmlserverevents.FMLServerStartingEvent;
+import net.minecraftforge.network.PacketDistributor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -19,7 +19,7 @@ public class ServerEvents {
     private static final Logger LOGGER = LogManager.getLogger();
 
     @SubscribeEvent
-    public static void onServerStarting(FMLServerStartingEvent event) throws IOException {
+    public static void onServerStarting(ServerStartingEvent event) throws IOException {
         HiddenNames.JSON = new JsonData(HiddenNames.MODID, "data.json", event.getServer());
         HiddenNames.JSON.getOrCreateFile();
         HiddenNames.JSON.readToData();

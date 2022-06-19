@@ -2,8 +2,8 @@ package github.pitbox46.hiddennames.network;
 
 import github.pitbox46.hiddennames.HiddenNames;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.fmllegacy.network.NetworkRegistry;
-import net.minecraftforge.fmllegacy.network.simple.SimpleChannel;
+import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.simple.SimpleChannel;
 
 public class PacketHandler {
     private static final String PROTOCOL_VERSION = "3.2.1";
@@ -19,13 +19,13 @@ public class PacketHandler {
                 ID++,
                 BlocksHidePacket.class,
                 (msg, pb) -> {
-                    pb.writeBoolean(msg.blocksHide);
+                    pb.writeBoolean(msg.blocksHide());
                 },
                 pb -> new BlocksHidePacket(pb.readBoolean()),
                 (msg, ctx) -> {
                     ctx.get().enqueueWork(() -> HiddenNames.PROXY.handleBlocksHideUpdate(
                             ctx.get(),
-                            msg.blocksHide
+                            msg.blocksHide()
                     ));
                     ctx.get().setPacketHandled(true);
                 });
