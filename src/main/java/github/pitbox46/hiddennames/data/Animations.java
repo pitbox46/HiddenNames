@@ -1,7 +1,10 @@
 package github.pitbox46.hiddennames.data;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.*;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 import net.minecraftforge.eventbus.api.Event;
@@ -51,10 +54,10 @@ public class Animations {
     public static final Animation RAINBOW = regAnimation(new Animation("rainbow", (event, tick) -> {
         Component displayName = NameData.DATA.get(event.getEntity().getUUID()).getDisplayName();
 
-        TextComponent newName = new TextComponent("");
+        MutableComponent newName = Component.literal("");
         int i = 0;
-        for (char c : displayName.getContents().toCharArray()) {
-            newName.append(new TextComponent(String.valueOf(c)).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Mth.hsvToRgb(((tick + 3 * i) % 180) / 180F, 1, 1)))));
+        for (char c : displayName.getString().toCharArray()) {
+            newName.append(Component.literal(String.valueOf(c)).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Mth.hsvToRgb(((tick + 3 * i) % 180) / 180F, 1, 1)))));
             i++;
         }
         event.setContent(newName);

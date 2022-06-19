@@ -10,14 +10,14 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import github.pitbox46.hiddennames.data.Animation;
 import github.pitbox46.hiddennames.data.Animations;
 import net.minecraft.commands.SharedSuggestionProvider;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 
 public class AnimationArgument implements ArgumentType<Animation> {
     private static final Dynamic2CommandExceptionType INVALID_ANIMATION = new Dynamic2CommandExceptionType(
-            (found, constants) -> new TextComponent(String.format("Animation key must be one of %s, found %s", constants, found)));
+            (found, constants) -> Component.literal(String.format("Animation key must be one of %s, found %s", constants, found)));
 
     private AnimationArgument() {
     }

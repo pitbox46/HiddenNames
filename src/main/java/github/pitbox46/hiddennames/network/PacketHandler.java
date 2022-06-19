@@ -8,7 +8,7 @@ import net.minecraftforge.network.simple.SimpleChannel;
 public class PacketHandler {
     private static final String PROTOCOL_VERSION = "3.2.1";
     public static SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(
-            new ResourceLocation("hiddennames", "main"),
+            new ResourceLocation(HiddenNames.MODID, "main"),
             () -> PROTOCOL_VERSION,
             PROTOCOL_VERSION::equals,
             PROTOCOL_VERSION::equals);
