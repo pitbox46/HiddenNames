@@ -1,6 +1,7 @@
 June 19 2022 pitbox46
-    -Fix bug with animation not being deserialized properly
-    -Add config option to see your own nameplate in F5 mode
+    -Fix data storage bug
+    -Fix animation bugs
+    -Add config option to see your own nametag in 3rd person view
 
 June 18 2022 pitbox46
     -Port to 1.17, 1.18
