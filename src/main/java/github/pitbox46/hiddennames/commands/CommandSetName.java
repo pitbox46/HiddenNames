@@ -1,6 +1,7 @@
 package github.pitbox46.hiddennames.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.LiteralMessage;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import github.pitbox46.hiddennames.data.Animation;
 import github.pitbox46.hiddennames.data.NameData;
@@ -40,8 +41,10 @@ public class CommandSetName {
                                         .executes(ctx -> {
                                             for (Player player : EntityArgument.getPlayers(ctx, "players1")) {
                                                 Component previous = NameData.DATA.get(player.getUUID()).getDisplayName();
-                                                NameData.DATA.get(player.getUUID()).setDisplayName(ctx.getArgument("name1", Component.class).plainCopy().withStyle(previous.getStyle()));
-
+                                                Component newName = ctx.getArgument("name1", Component.class)
+                                                        .plainCopy()
+                                                        .withStyle(previous.getStyle());
+                                                NameData.DATA.get(player.getUUID()).setDisplayName(newName);
                                             }
                                             NameData.sendSyncData();
                                             return 0;
@@ -51,7 +54,10 @@ public class CommandSetName {
                                         .executes(ctx -> {
                                             for (Player player : EntityArgument.getPlayers(ctx, "players1")) {
                                                 Component previous = NameData.DATA.get(player.getUUID()).getDisplayName();
-                                                NameData.DATA.get(player.getUUID()).setDisplayName(previous.plainCopy().withStyle(ctx.getArgument("color1", ChatFormatting.class)));
+                                                Component newName = Component
+                                                        .literal(previous.getString())
+                                                        .withStyle(ctx.getArgument("color1", ChatFormatting.class));
+                                                NameData.DATA.get(player.getUUID()).setDisplayName(newName);
                                             }
                                             NameData.sendSyncData();
                                             return 0;
