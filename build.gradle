@@ -15,7 +15,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.parchmentmc.librarian.forgegradle'
 
 group = 'github.pitbox46'
-version = '1.17.1-1.0.1'
+version = '1.17.1-1.0.2'
 archivesBaseName = 'hiddennames'
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '16'
