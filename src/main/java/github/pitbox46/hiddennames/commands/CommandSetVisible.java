@@ -15,7 +15,7 @@ public class CommandSetVisible {
         return Commands
                 .literal("nameplateVisible")
                 .requires(cs -> cs.hasPermission(2))
-                .then(Commands.argument("player", EntityArgument.players())
+                .then(Commands.argument("players", EntityArgument.players())
                         .then(Commands.argument("boolean", BoolArgumentType.bool())
                                 .executes(ctx -> {
                                     for (Player player : EntityArgument.getPlayers(ctx, "players")) {
