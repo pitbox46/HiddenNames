@@ -12,7 +12,7 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RenderNameplateEvent;
+import net.minecraftforge.client.event.RenderNameTagEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -21,7 +21,7 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(value = Dist.CLIENT)
 public class ClientEvents {
     @SubscribeEvent
-    public static void onRenderNameplate(RenderNameplateEvent event) {
+    public static void onRenderNameplate(RenderNameTagEvent event) {
         Player localPlayer = Minecraft.getInstance().player;
         double tick = localPlayer.level.getGameTime() + event.getPartialTick();
 
@@ -52,7 +52,7 @@ public class ClientEvents {
      * Testing on a mob is much easier than testing on a player (requires two Minecraft instances).
      */
     @SubscribeEvent
-    public static void onRenderMobNameplate(RenderNameplateEvent event) {
+    public static void onRenderMobNameplate(RenderNameTagEvent event) {
 //        double tick = Minecraft.getInstance().player.world.getGameTime() + event.getPartialTicks();
 //
 //        if(event.getEntity() instanceof MobEntity && event.getContent().getUnformattedComponentText().equals("thisIsForTesting")) {
@@ -63,10 +63,10 @@ public class ClientEvents {
 
     @SubscribeEvent
     public void onNameFormat(PlayerEvent.NameFormat event) {
-        if (NameData.DATA.get(event.getPlayer().getUUID()) != null && event.getPlayer() instanceof AbstractClientPlayer) {
-            Component displayName = NameData.DATA.get(event.getPlayer().getUUID()).getDisplayName();
+        if (NameData.DATA.get(event.getEntity().getUUID()) != null && event.getEntity() instanceof AbstractClientPlayer) {
+            Component displayName = NameData.DATA.get(event.getEntity().getUUID()).getDisplayName();
             event.setDisplayname(displayName);
-            PlayerInfo playerInfo = Minecraft.getInstance().player.connection.getPlayerInfo(event.getPlayer().getUUID());
+            PlayerInfo playerInfo = Minecraft.getInstance().player.connection.getPlayerInfo(event.getEntity().getUUID());
             if (playerInfo != null) {
                 playerInfo.setTabListDisplayName(displayName);
             }

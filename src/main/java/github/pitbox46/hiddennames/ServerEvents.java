@@ -7,7 +7,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
-import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.network.PacketDistributor;
 import org.apache.logging.log4j.LogManager;
@@ -27,14 +27,14 @@ public class ServerEvents {
 
     @SubscribeEvent
     public static void onJoinServer(PlayerEvent.PlayerLoggedInEvent event) {
-        Player player = event.getPlayer();
+        Player player = event.getEntity();
         NameData.DATA.computeIfAbsent(player.getUUID(), uuid -> new NameData(player));
         PacketHandler.CHANNEL.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) player), new BlocksHidePacket(Config.BLOCKS_HIDE.get()));
         NameData.sendSyncData();
     }
 
     @SubscribeEvent
-    public static void onWorldSave(WorldEvent.Save event) throws IOException {
+    public static void onWorldSave(LevelEvent.Save event) throws IOException {
         if (HiddenNames.JSON != null)
             HiddenNames.JSON.saveToJson();
     }
