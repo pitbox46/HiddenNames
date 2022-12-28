@@ -8,6 +8,7 @@ import github.pitbox46.hiddennames.network.CommonProxy;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.commands.synchronization.ArgumentTypeInfos;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -31,7 +32,7 @@ public class HiddenNames {
     public static CommonProxy PROXY;
     public static JsonData JSON;
 
-    public static final DeferredRegister<ArgumentTypeInfo<?, ?>> ARG_TYPE_INFO_REG = DeferredRegister.create(Registry.COMMAND_ARGUMENT_TYPE_REGISTRY, MODID);
+    public static final DeferredRegister<ArgumentTypeInfo<?, ?>> ARG_TYPE_INFO_REG = DeferredRegister.create(Registries.COMMAND_ARGUMENT_TYPE, MODID);
     public static final RegistryObject<ArgumentTypeInfo<?, ?>> ANIMATION_ARG =
             ARG_TYPE_INFO_REG.register("animation_arg", () -> ArgumentTypeInfos.registerByClass(AnimationArgument.class, new AnimationArgumentSerializer()));
 
