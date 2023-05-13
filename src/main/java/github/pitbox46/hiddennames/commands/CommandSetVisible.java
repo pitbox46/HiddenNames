@@ -24,7 +24,7 @@ public class CommandSetVisible {
                                         if (!flag) {
                                             data.setAnimation(Animations.HIDDEN);
                                         } else if (data.getAnimation() == Animations.HIDDEN) {
-                                            data.setAnimation(Animations.NULL);
+                                            data.setAnimation(Animations.NO_ANIMATION);
                                         }
                                     }
                                     NameData.sendSyncData();

@@ -1,5 +1,6 @@
 package github.pitbox46.hiddennames.data;
 
+import github.pitbox46.hiddennames.Config;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -7,7 +8,9 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 import net.minecraftforge.eventbus.api.Event;
+import org.apache.commons.lang3.RandomStringUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -21,7 +24,7 @@ public class Animations {
     private static final Map<String, Animation> ANIMATIONS = new HashMap<>();
 
     //We don't actually need these static fields for most of these. They're just for convenience if they're needed in the code somewhere later
-    public static final Animation NULL = regAnimation(new Animation("null", (event, tick) -> {
+    public static final Animation NO_ANIMATION = regAnimation(new Animation("null", (event, tick) -> {
         event.setContent(NameData.DATA.get(event.getEntity().getUUID()).getDisplayName());
     }));
     public static final Animation HIDDEN = regAnimation(new Animation("hidden", (event, tick) -> event.setResult(Event.Result.DENY)));
@@ -79,6 +82,11 @@ public class Animations {
         event.setContent(newName);
     }));
 
+    /**
+     * This method is all you will have to call to register an animation.
+     * @param animation
+     * @return
+     */
     public static Animation regAnimation(Animation animation) {
         ANIMATIONS.put(animation.key(), animation);
         return animation;
@@ -86,11 +94,11 @@ public class Animations {
 
     @Nonnull
     public static Animation getAnimation(String key) {
-        return ANIMATIONS.getOrDefault(key, NULL);
+        return ANIMATIONS.getOrDefault(key, NO_ANIMATION);
     }
 
     /**
-     * Does not return {@link Animations#NULL} if there is no value
+     * Does not return {@link Animations#NO_ANIMATION} if there is no value (returns null instead)
      */
     @Nullable
     public static Animation getAnimationUnsafe(String key) {

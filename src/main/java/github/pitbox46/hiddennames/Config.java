@@ -9,6 +9,7 @@ public class Config {
     public static ForgeConfigSpec.BooleanValue DEFAULT_VISIBLE;
     public static ForgeConfigSpec.BooleanValue BLOCKS_HIDE;
     public static ForgeConfigSpec.BooleanValue SHOW_OWN;
+    public static ForgeConfigSpec.BooleanValue RENDER_ANIMATIONS;
 
     //SERVER
     static {
@@ -33,6 +34,8 @@ public class Config {
 
         SHOW_OWN = CLIENT_BUILDER.comment("Show your own nametag when in 3rd person view")
                 .define("show_own", false);
+        RENDER_ANIMATIONS = CLIENT_BUILDER.comment("Render animations. Will only show colored nametags (or none if hidden) if false")
+                .define("render_animations", true);
 
         CLIENT_BUILDER.pop();
         CLIENT_CONFIG = CLIENT_BUILDER.build();

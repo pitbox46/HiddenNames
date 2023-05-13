@@ -22,7 +22,7 @@ public class NameData {
     private Animation animation;
 
     public NameData(Player player) {
-        this(player, Config.DEFAULT_VISIBLE.get() ? Animations.NULL : Animations.HIDDEN);
+        this(player, Config.DEFAULT_VISIBLE.get() ? Animations.NO_ANIMATION: Animations.HIDDEN);
     }
 
     public NameData(Player player, @Nonnull Animation animation) {
@@ -55,11 +55,11 @@ public class NameData {
     }
 
     public Animation getAnimation() {
-        return animation == null ? Animations.NULL : animation;
+        return animation == null ? Animations.NO_ANIMATION : animation;
     }
 
     public void setAnimation(Animation animation) {
-        this.animation = (animation == null ? Animations.NULL : animation);
+        this.animation = animation == null ? Animations.NO_ANIMATION : animation;
     }
 
     public JsonObject serialize(JsonObject json) {

@@ -26,12 +26,10 @@ public class ClientEvents {
         if (event.getEntity() instanceof Player) {
             NameData nameData = NameData.DATA.get(event.getEntity().getUUID());
 
-            if(event.getEntity() == localPlayer && Config.SHOW_OWN.get() && !event.getEntity().isSpectator())
+            if (event.getEntity() == localPlayer && Config.SHOW_OWN.get() && !event.getEntity().isSpectator())
                 event.setResult(Event.Result.ALLOW);
-
             if (nameData == null)
                 return;
-
             if (nameData.getAnimation() != Animations.HIDDEN && ClientProxy.doBlocksHide()) {
                 Vec3 vector3d = localPlayer.getEyePosition(event.getPartialTick());
                 Vec3 vector3d1 = event.getEntity().getEyePosition(event.getPartialTick());
@@ -40,6 +38,10 @@ public class ClientEvents {
                     return;
                 }
             }
+            if (!Config.RENDER_ANIMATIONS.get() && nameData.getAnimation() != Animations.HIDDEN) {
+                return;
+            }
+
             //The addition is an offset so each player doesn't have the same animation go at the same time
             nameData.getAnimation().renderer().accept(event, Minecraft.getInstance().level.getGameTime() + event.getEntity().getId() * 21L);
         }
