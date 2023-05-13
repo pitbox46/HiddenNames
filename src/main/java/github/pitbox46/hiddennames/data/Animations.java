@@ -81,11 +81,22 @@ public class Animations {
 
         event.setContent(newName);
     }));
+    public static final Animation RANDOM = regAnimation(new Animation("random", (event, tick) -> {
+        int toNext = 15;
+        Random rng = new Random(event.getEntity().getId() * (tick / toNext));
+
+        String name = RandomStringUtils.random(rng.nextInt(3, 10), 32, 127, false, false, null, rng);
+
+        MutableComponent newName = Component.literal("");
+        for (char c : name.toCharArray()) {
+            newName.append(Component.literal(String.valueOf(c)).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(rng.nextInt()))));
+        }
+
+        event.setContent(newName);
+    }));
 
     /**
      * This method is all you will have to call to register an animation.
-     * @param animation
-     * @return
      */
     public static Animation regAnimation(Animation animation) {
         ANIMATIONS.put(animation.key(), animation);
