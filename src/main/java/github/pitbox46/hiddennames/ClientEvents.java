@@ -45,22 +45,8 @@ public class ClientEvents {
         }
     }
 
-    /**
-     * Used for testing new animations.
-     * Testing on a mob is much easier than testing on a player (requires two Minecraft instances).
-     */
     @SubscribeEvent
-    public static void onRenderMobNameplate(RenderNameTagEvent event) {
-//        double tick = Minecraft.getInstance().player.world.getGameTime() + event.getPartialTicks();
-//
-//        if(event.getEntity() instanceof MobEntity && event.getContent().getUnformattedComponentText().equals("thisIsForTesting")) {
-//
-//        }
-//        previousTick = tick;
-    }
-
-    @SubscribeEvent
-    public void onNameFormat(PlayerEvent.NameFormat event) {
+    public static void onNameFormat(PlayerEvent.NameFormat event) {
         if (NameData.DATA.get(event.getEntity().getUUID()) != null && event.getEntity() instanceof AbstractClientPlayer) {
             Component displayName = NameData.DATA.get(event.getEntity().getUUID()).getDisplayName();
             event.setDisplayname(displayName);

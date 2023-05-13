@@ -34,7 +34,7 @@ displayName = "Hidden Names" #mandatory
 authors = "pitbox46" #optional
 # The description text for the mod (multi line!) (#mandatory)
 description = '''
-Hide player name plates!
+Hide player name plates, animate your name, be Will Toledo if you want
 '''
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
 [[dependencies.hiddennames]] #optional
