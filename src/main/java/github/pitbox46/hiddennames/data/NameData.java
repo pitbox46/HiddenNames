@@ -15,7 +15,15 @@ import java.util.Map;
 import java.util.UUID;
 
 public class NameData {
-    public final static Map<UUID, NameData> DATA = new HashMap<>();
+    /**
+     * Instead of failing hard, we prefer to compute an error name
+     */
+    public final static Map<UUID, NameData> DATA = new HashMap<>() {
+        @Override
+        public NameData get(Object key) {
+            return computeIfAbsent((UUID) key, k -> new NameData(k, Component.literal("ERROR_DESYNC:" + k.toString()), Animations.NO_ANIMATION));
+        }
+    };
 
     private final UUID uuid;
     private Component displayName;

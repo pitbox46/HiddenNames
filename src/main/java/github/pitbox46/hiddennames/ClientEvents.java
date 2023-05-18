@@ -7,11 +7,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.RenderNameTagEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.Event;
@@ -57,5 +60,20 @@ public class ClientEvents {
                 playerInfo.setTabListDisplayName(displayName);
             }
         }
+    }
+
+    @SubscribeEvent
+    public static void onClientChatReceived(ClientChatReceivedEvent event) {
+        Component component = event.getMessage();
+        if(!NameData.DATA.containsKey(event.getSender())) {
+            return;
+        }
+        if(component.getContents() instanceof TranslatableContents contents && contents.getArgs().length > 0) {
+            if(contents.getArgs()[0] instanceof MutableComponent nameComponent && nameComponent.getSiblings().size() > 0) {
+                nameComponent.getSiblings().remove(0);
+                nameComponent.getSiblings().add(0, NameData.DATA.get(event.getSender()).getDisplayName());
+            }
+        }
+        event.setMessage(component);
     }
 }
