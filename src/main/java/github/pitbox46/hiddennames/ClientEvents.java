@@ -36,7 +36,7 @@ public class ClientEvents {
             if (nameData.getAnimation() != Animations.HIDDEN && ClientProxy.doBlocksHide()) {
                 Vec3 vector3d = localPlayer.getEyePosition(event.getPartialTick());
                 Vec3 vector3d1 = event.getEntity().getEyePosition(event.getPartialTick());
-                if (localPlayer.level.clip(new ClipContext(vector3d, vector3d1, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, localPlayer)).getType() != HitResult.Type.MISS) {
+                if (localPlayer.getLevel().clip(new ClipContext(vector3d, vector3d1, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, localPlayer)).getType() != HitResult.Type.MISS) {
                     event.setResult(Event.Result.DENY);
                     return;
                 }

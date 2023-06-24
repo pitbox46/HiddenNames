@@ -30,8 +30,9 @@ public class JsonData {
     }
 
     public void getOrCreateFile() throws IOException {
-        Path modFolder = server.getWorldPath(new LevelResource(modName));
-        File dataFile = new File(FileUtils.getOrCreateDirectory(modFolder, modName).toFile(), fileName);
+        Path modFolderPath = server.getWorldPath(new LevelResource(modName));
+        File modFolder = Files.isDirectory(modFolderPath) ? modFolderPath.toFile() : Files.createDirectory(modFolderPath).toFile();
+        File dataFile = new File(modFolder, fileName);
         if (dataFile.createNewFile()) {
             Files.writeString(dataFile.toPath(), GSON.toJson(new JsonArray()));
         }
