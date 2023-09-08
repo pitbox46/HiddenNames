@@ -34,11 +34,6 @@ public class HiddenNames {
     }
 
     @SubscribeEvent
-    public void onCommonSetup(RegistryEvent<Block> event) {
-        ArgumentTypes.register("animation", AnimationArgument.class, new EmptyArgumentSerializer<>(AnimationArgument::animationArgument));
-    }
-
-    @SubscribeEvent
     public void onRegisterCommands(RegisterCommandsEvent event) {
         ModCommands.register(event.getDispatcher());
     }
