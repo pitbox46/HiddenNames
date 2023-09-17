@@ -15,7 +15,7 @@ public class HiddenNamesAPI {
      * @param visible Visibility to set
      */
     public static void setPlayerVisibility(PlayerEntity player, boolean visible) {
-        CSVHandler.replaceEntry(HiddenNames.dataFile, player.getName().toString(), CSVHandler.Columns.NAME_VISIBLE,
+        CSVHandler.replaceEntry(HiddenNames.dataFile, player.getName().getString(), CSVHandler.Columns.NAME_VISIBLE,
                 String.valueOf(visible));
         CSVHandler.updateClients(HiddenNames.dataFile, PacketHandler.CHANNEL);
     }
