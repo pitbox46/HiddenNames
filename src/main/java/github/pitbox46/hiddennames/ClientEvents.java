@@ -61,7 +61,7 @@ public class ClientEvents {
     }
 
     @SubscribeEvent
-    public void onNameFormat(PlayerEvent.NameFormat event) {
+    public static void onNameFormat(PlayerEvent.NameFormat event) {
         if (NameData.DATA.get(event.getPlayer().getUUID()) != null && event.getPlayer() instanceof AbstractClientPlayer) {
             Component displayName = NameData.DATA.get(event.getPlayer().getUUID()).getDisplayName();
             event.setDisplayname(displayName);
