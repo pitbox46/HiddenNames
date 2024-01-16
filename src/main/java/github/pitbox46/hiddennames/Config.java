@@ -11,6 +11,7 @@ public class Config {
     public static ModConfigSpec.BooleanValue BLOCKS_HIDE;
     public static ModConfigSpec.BooleanValue SHOW_OWN;
     public static ModConfigSpec.BooleanValue RENDER_ANIMATIONS;
+    public static ModConfigSpec.IntValue CHANGE_OWN_NAME_LEVEL;
 
     //SERVER
     static {
@@ -23,6 +24,9 @@ public class Config {
 
         BLOCKS_HIDE = SERVER_BUILDER.comment("Blocks hide nameplates. False is normal Minecraft nameplate rendering")
                 .define("blocks_hide", false);
+
+        CHANGE_OWN_NAME_LEVEL = SERVER_BUILDER.comment("The perm level to be able to change your own name")
+                .defineInRange("change_own_name_level", 2, 0, 4);
 
         SERVER_BUILDER.pop();
         SERVER_CONFIG = SERVER_BUILDER.build();
