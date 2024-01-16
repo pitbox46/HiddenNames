@@ -4,10 +4,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import github.pitbox46.hiddennames.Config;
 import github.pitbox46.hiddennames.network.NameDataSyncPacket;
-import github.pitbox46.hiddennames.network.PacketHandler;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
@@ -46,7 +45,7 @@ public class NameData {
     //TODO Consider only sending necessary packets rather than sending them all (only new players need all packets)
     public static void sendSyncData() {
         for (NameData data : DATA.values()) {
-            PacketHandler.CHANNEL.send(PacketDistributor.ALL.noArg(), new NameDataSyncPacket(data));
+            PacketDistributor.ALL.noArg().send(new NameDataSyncPacket(data));
         }
     }
 

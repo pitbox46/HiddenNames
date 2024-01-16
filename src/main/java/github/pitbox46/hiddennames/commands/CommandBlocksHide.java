@@ -8,10 +8,9 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import github.pitbox46.hiddennames.Config;
 import github.pitbox46.hiddennames.network.BlocksHidePacket;
-import github.pitbox46.hiddennames.network.PacketHandler;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 public class CommandBlocksHide implements Command<CommandSourceStack> {
 
@@ -29,7 +28,7 @@ public class CommandBlocksHide implements Command<CommandSourceStack> {
     public int run(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         Config.BLOCKS_HIDE.set(BoolArgumentType.getBool(context, "boolean"));
         Config.BLOCKS_HIDE.save();
-        PacketHandler.CHANNEL.send(PacketDistributor.ALL.noArg(), new BlocksHidePacket(Config.BLOCKS_HIDE.get()));
+        PacketDistributor.ALL.noArg().send(new BlocksHidePacket(Config.BLOCKS_HIDE.get()));
         return 0;
     }
 }

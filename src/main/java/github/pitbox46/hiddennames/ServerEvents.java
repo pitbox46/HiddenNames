@@ -2,14 +2,13 @@ package github.pitbox46.hiddennames;
 
 import github.pitbox46.hiddennames.data.NameData;
 import github.pitbox46.hiddennames.network.BlocksHidePacket;
-import github.pitbox46.hiddennames.network.PacketHandler;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.server.ServerStartingEvent;
-import net.minecraftforge.event.level.LevelEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.level.LevelEvent;
+import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -29,7 +28,7 @@ public class ServerEvents {
     public static void onJoinServer(PlayerEvent.PlayerLoggedInEvent event) {
         Player player = event.getEntity();
         NameData.DATA.computeIfAbsent(player.getUUID(), uuid -> new NameData(player));
-        PacketHandler.CHANNEL.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) player), new BlocksHidePacket(Config.BLOCKS_HIDE.get()));
+        PacketDistributor.PLAYER.with((ServerPlayer) player).send(new BlocksHidePacket(Config.BLOCKS_HIDE.get()));
         NameData.sendSyncData();
     }
 

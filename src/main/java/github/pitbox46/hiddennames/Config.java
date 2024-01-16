@@ -1,19 +1,20 @@
 package github.pitbox46.hiddennames;
 
-import net.minecraftforge.common.ForgeConfigSpec;
+
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class Config {
-    public static ForgeConfigSpec SERVER_CONFIG;
-    public static ForgeConfigSpec CLIENT_CONFIG;
+    public static ModConfigSpec SERVER_CONFIG;
+    public static ModConfigSpec CLIENT_CONFIG;
 
-    public static ForgeConfigSpec.BooleanValue DEFAULT_VISIBLE;
-    public static ForgeConfigSpec.BooleanValue BLOCKS_HIDE;
-    public static ForgeConfigSpec.BooleanValue SHOW_OWN;
-    public static ForgeConfigSpec.BooleanValue RENDER_ANIMATIONS;
+    public static ModConfigSpec.BooleanValue DEFAULT_VISIBLE;
+    public static ModConfigSpec.BooleanValue BLOCKS_HIDE;
+    public static ModConfigSpec.BooleanValue SHOW_OWN;
+    public static ModConfigSpec.BooleanValue RENDER_ANIMATIONS;
 
     //SERVER
     static {
-        ForgeConfigSpec.Builder SERVER_BUILDER = new ForgeConfigSpec.Builder();
+        ModConfigSpec.Builder SERVER_BUILDER = new ModConfigSpec.Builder();
 
         SERVER_BUILDER.comment("General Settings").push("general");
 
@@ -28,7 +29,7 @@ public class Config {
     }
     //CLIENT
     static {
-        ForgeConfigSpec.Builder CLIENT_BUILDER = new ForgeConfigSpec.Builder();
+        ModConfigSpec.Builder CLIENT_BUILDER = new ModConfigSpec.Builder();
 
         CLIENT_BUILDER.comment("Client Settings").push("general");
 

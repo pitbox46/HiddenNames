@@ -2,7 +2,7 @@ package github.pitbox46.hiddennames;
 
 import github.pitbox46.hiddennames.data.Animations;
 import github.pitbox46.hiddennames.data.NameData;
-import github.pitbox46.hiddennames.network.ClientProxy;
+import github.pitbox46.hiddennames.network.ClientPayloadHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -13,13 +13,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.ClientChatReceivedEvent;
-import net.minecraftforge.client.event.RenderNameTagEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.eventbus.api.Event;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.Event;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.client.event.ClientChatReceivedEvent;
+import net.neoforged.neoforge.client.event.RenderNameTagEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT)
 public class ClientEvents {
@@ -33,10 +33,10 @@ public class ClientEvents {
                 event.setResult(Event.Result.ALLOW);
             if (nameData == null)
                 return;
-            if (nameData.getAnimation() != Animations.HIDDEN && ClientProxy.doBlocksHide()) {
+            if (nameData.getAnimation() != Animations.HIDDEN && ClientPayloadHandler.getInstance().doBlocksHide()) {
                 Vec3 vector3d = localPlayer.getEyePosition(event.getPartialTick());
                 Vec3 vector3d1 = event.getEntity().getEyePosition(event.getPartialTick());
-                if (localPlayer.getLevel().clip(new ClipContext(vector3d, vector3d1, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, localPlayer)).getType() != HitResult.Type.MISS) {
+                if (localPlayer.level().clip(new ClipContext(vector3d, vector3d1, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, localPlayer)).getType() != HitResult.Type.MISS) {
                     event.setResult(Event.Result.DENY);
                     return;
                 }
@@ -69,7 +69,7 @@ public class ClientEvents {
             return;
         }
         if(component.getContents() instanceof TranslatableContents contents && contents.getArgs().length > 0) {
-            if(contents.getArgs()[0] instanceof MutableComponent nameComponent && nameComponent.getSiblings().size() > 0) {
+            if(contents.getArgs()[0] instanceof MutableComponent nameComponent && !nameComponent.getSiblings().isEmpty()) {
                 nameComponent.getSiblings().remove(0);
                 nameComponent.getSiblings().add(0, NameData.DATA.get(event.getSender()).getDisplayName());
             }

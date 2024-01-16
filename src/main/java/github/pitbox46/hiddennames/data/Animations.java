@@ -1,6 +1,5 @@
 package github.pitbox46.hiddennames.data;
 
-import github.pitbox46.hiddennames.Config;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -8,8 +7,7 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
-import net.minecraftforge.eventbus.api.Event;
+import net.neoforged.bus.api.Event;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import javax.annotation.Nonnull;

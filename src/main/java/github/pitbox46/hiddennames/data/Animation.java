@@ -1,6 +1,7 @@
 package github.pitbox46.hiddennames.data;
 
-import net.minecraftforge.client.event.RenderNameTagEvent;
+
+import net.neoforged.neoforge.client.event.RenderNameTagEvent;
 
 import java.util.function.BiConsumer;
 

@@ -7,7 +7,6 @@ import com.google.gson.JsonElement;
 import github.pitbox46.hiddennames.data.NameData;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.storage.LevelResource;
-import net.minecraftforge.fml.loading.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
