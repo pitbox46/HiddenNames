@@ -3,6 +3,7 @@ package github.pitbox46.hiddennames.data;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import github.pitbox46.hiddennames.Config;
+import github.pitbox46.hiddennames.PlayerDuck;
 import github.pitbox46.hiddennames.network.NameDataSyncPacket;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
@@ -20,7 +21,8 @@ public class NameData {
     public final static Map<UUID, NameData> DATA = new HashMap<>() {
         @Override
         public NameData get(Object key) {
-            return computeIfAbsent((UUID) key, k -> new NameData(k, Component.literal("ERROR_DESYNC:" + k.toString()), Animations.NO_ANIMATION));
+            NameData data = super.get(key);
+            return data != null ? data : new NameData((UUID) key, Component.literal("ERROR_DESYNC:" + key.toString()), Animations.NO_ANIMATION);
         }
     };
 
@@ -33,7 +35,7 @@ public class NameData {
     }
 
     public NameData(Player player, @Nonnull Animation animation) {
-        this(player.getUUID(), player.getDisplayName(), animation);
+        this(player.getUUID(), ((PlayerDuck) player).hiddenNames$getUnmodifiedDisplayName(), animation);
     }
 
     public NameData(UUID uuid, Component displayName, Animation animation) {
@@ -69,6 +71,7 @@ public class NameData {
         this.animation = animation == null ? Animations.NO_ANIMATION : animation;
     }
 
+    //region Serial
     public JsonObject serialize(JsonObject json) {
         json.addProperty("uuid", uuid.toString());
         json.add("displayName", Component.Serializer.toJsonTree(displayName));
@@ -89,4 +92,5 @@ public class NameData {
             array.add(data.serialize(new JsonObject()));
         return array;
     }
+    //endregion
 }

@@ -53,27 +53,10 @@ public class ClientEvents {
     @SubscribeEvent
     public static void onNameFormat(PlayerEvent.NameFormat event) {
         if (NameData.DATA.get(event.getEntity().getUUID()) != null && event.getEntity() instanceof AbstractClientPlayer) {
-            Component displayName = NameData.DATA.get(event.getEntity().getUUID()).getDisplayName();
-            event.setDisplayname(displayName);
             PlayerInfo playerInfo = Minecraft.getInstance().player.connection.getPlayerInfo(event.getEntity().getUUID());
             if (playerInfo != null) {
-                playerInfo.setTabListDisplayName(displayName);
+                playerInfo.setTabListDisplayName(NameData.DATA.get(event.getEntity().getUUID()).getDisplayName());
             }
         }
-    }
-
-    @SubscribeEvent
-    public static void onClientChatReceived(ClientChatReceivedEvent event) {
-        Component component = event.getMessage();
-        if(!NameData.DATA.containsKey(event.getSender())) {
-            return;
-        }
-        if(component.getContents() instanceof TranslatableContents contents && contents.getArgs().length > 0) {
-            if(contents.getArgs()[0] instanceof MutableComponent nameComponent && !nameComponent.getSiblings().isEmpty()) {
-                nameComponent.getSiblings().remove(0);
-                nameComponent.getSiblings().add(0, NameData.DATA.get(event.getSender()).getDisplayName());
-            }
-        }
-        event.setMessage(component);
     }
 }
