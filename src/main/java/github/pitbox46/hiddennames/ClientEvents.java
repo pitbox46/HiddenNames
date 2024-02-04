@@ -36,7 +36,7 @@ public class ClientEvents {
             if (nameData.getAnimation() != Animations.HIDDEN && ClientProxy.doBlocksHide()) {
                 Vec3 vector3d = localPlayer.getEyePosition(event.getPartialTick());
                 Vec3 vector3d1 = event.getEntity().getEyePosition(event.getPartialTick());
-                if (localPlayer.getLevel().clip(new ClipContext(vector3d, vector3d1, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, localPlayer)).getType() != HitResult.Type.MISS) {
+                if (localPlayer.level().clip(new ClipContext(vector3d, vector3d1, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, localPlayer)).getType() != HitResult.Type.MISS) {
                     event.setResult(Event.Result.DENY);
                     return;
                 }
@@ -53,27 +53,10 @@ public class ClientEvents {
     @SubscribeEvent
     public static void onNameFormat(PlayerEvent.NameFormat event) {
         if (NameData.DATA.get(event.getEntity().getUUID()) != null && event.getEntity() instanceof AbstractClientPlayer) {
-            Component displayName = NameData.DATA.get(event.getEntity().getUUID()).getDisplayName();
-            event.setDisplayname(displayName);
             PlayerInfo playerInfo = Minecraft.getInstance().player.connection.getPlayerInfo(event.getEntity().getUUID());
             if (playerInfo != null) {
-                playerInfo.setTabListDisplayName(displayName);
+                playerInfo.setTabListDisplayName(NameData.DATA.get(event.getEntity().getUUID()).getDisplayName());
             }
         }
-    }
-
-    @SubscribeEvent
-    public static void onClientChatReceived(ClientChatReceivedEvent event) {
-        Component component = event.getMessage();
-        if(!NameData.DATA.containsKey(event.getSender())) {
-            return;
-        }
-        if(component.getContents() instanceof TranslatableContents contents && contents.getArgs().length > 0) {
-            if(contents.getArgs()[0] instanceof MutableComponent nameComponent && nameComponent.getSiblings().size() > 0) {
-                nameComponent.getSiblings().remove(0);
-                nameComponent.getSiblings().add(0, NameData.DATA.get(event.getSender()).getDisplayName());
-            }
-        }
-        event.setMessage(component);
     }
 }
