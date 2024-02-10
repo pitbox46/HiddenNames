@@ -2,7 +2,7 @@
   "required": true,
   "package": "github.pitbox46.hiddennames.mixin",
   "compatibilityLevel": "JAVA_17",
-  "refmap": "horsecombatcontrols.refmap.json",
+  "refmap": "hiddennames.refmap.json",
   "mixins": [
     "PlayerMixin"
   ],
