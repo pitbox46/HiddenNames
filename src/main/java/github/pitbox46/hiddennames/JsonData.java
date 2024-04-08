@@ -47,6 +47,6 @@ public class JsonData {
     }
 
     public void saveToJson() throws IOException {
-        Files.write(path, GSON.toJson(NameData.deserializeAll()).getBytes(), StandardOpenOption.TRUNCATE_EXISTING);
+        Files.writeString(path, GSON.toJson(NameData.deserializeAll()), StandardOpenOption.TRUNCATE_EXISTING);
     }
 }
