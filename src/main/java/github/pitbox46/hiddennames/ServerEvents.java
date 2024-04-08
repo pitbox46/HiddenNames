@@ -21,7 +21,12 @@ public class ServerEvents {
     public static void onServerStarting(ServerStartingEvent event) throws IOException {
         HiddenNames.JSON = new JsonData(HiddenNames.MODID, "data.json", event.getServer());
         HiddenNames.JSON.getOrCreateFile();
-        HiddenNames.JSON.readToData();
+        try {
+            HiddenNames.JSON.readToData();
+        } catch (IOException e) {
+            LOGGER.error("Could not parse hiddennames/data.json");
+            LOGGER.catching(e);
+        }
     }
 
     @SubscribeEvent
