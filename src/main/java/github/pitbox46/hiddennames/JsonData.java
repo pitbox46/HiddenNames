@@ -11,6 +11,7 @@ import net.minecraftforge.fml.loading.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
@@ -48,6 +49,6 @@ public class JsonData {
     }
 
     public void saveToJson() throws IOException {
-        Files.write(path, GSON.toJson(NameData.deserializeAll()).getBytes(), StandardOpenOption.TRUNCATE_EXISTING);
+        Files.writeString(path, GSON.toJson(NameData.deserializeAll()), StandardOpenOption.TRUNCATE_EXISTING);
     }
 }
