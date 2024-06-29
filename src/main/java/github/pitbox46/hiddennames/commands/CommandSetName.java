@@ -8,6 +8,7 @@ import github.pitbox46.hiddennames.Config;
 import github.pitbox46.hiddennames.data.Animation;
 import github.pitbox46.hiddennames.data.NameData;
 import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.ColorArgument;
@@ -25,29 +26,30 @@ import java.util.Collections;
 import java.util.function.Function;
 
 public class CommandSetName {
-    private static final Logger LOGGER = LogManager.getLogger();
-
-    public static ArgumentBuilder<CommandSourceStack, ?> register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        return buildSetName(Commands
-                        .literal("setName")
+    public static ArgumentBuilder<CommandSourceStack, ?> register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext context) {
+        return buildSetName(
+                Commands.literal("setName")
                         .requires(cs -> cs.hasPermission(Config.CHANGE_OWN_NAME_LEVEL.get())),
-                ctx -> ctx.getSource().getPlayer()==null ? Collections.emptySet():Collections.singleton(ctx.getSource().getPlayer())
-        ).then(buildSetName(Commands
-                .argument("players1", EntityArgument.players())
-                .requires(cs -> cs.hasPermission(2)), ctx -> {
+                ctx -> ctx.getSource().getPlayer()==null ? Collections.emptySet():Collections.singleton(ctx.getSource().getPlayer()),
+                context
+        ).then(buildSetName(
+                Commands.argument("players1", EntityArgument.players())
+                        .requires(cs -> cs.hasPermission(2)),
+                ctx -> {
                     try {
                         return EntityArgument.getPlayers(ctx, "players1");
                     } catch (CommandSyntaxException e) {
                         throw new RuntimeException(e);
                     }
-                }
+                },
+                context
         ));
     }
 
-    private static ArgumentBuilder<CommandSourceStack, ?> buildSetName(ArgumentBuilder<CommandSourceStack, ?> builder, Function<CommandContext<CommandSourceStack>, Collection<ServerPlayer>> getPlayers) {
+    private static ArgumentBuilder<CommandSourceStack, ?> buildSetName(ArgumentBuilder<CommandSourceStack, ?> builder, Function<CommandContext<CommandSourceStack>, Collection<ServerPlayer>> getPlayers, CommandBuildContext context) {
         return builder.then(Commands.argument("color1", ColorArgument.color())
                         .then(Commands.argument("animation1", AnimationArgument.animationArgument())
-                                .then(Commands.argument("name1", ComponentArgument.textComponent())
+                                .then(Commands.argument("name1", ComponentArgument.textComponent(context))
                                         .executes(ctx -> {
                                             for (Player player : getPlayers.apply(ctx)) {
                                                 MutableComponent displayName = ctx.getArgument("name1", Component.class).copy().withStyle(ctx.getArgument("color1", ChatFormatting.class));
@@ -57,7 +59,7 @@ public class CommandSetName {
                                             return 0;
                                         }))))
                 .then(Commands.literal("name")
-                        .then(Commands.argument("name1", ComponentArgument.textComponent())
+                        .then(Commands.argument("name1", ComponentArgument.textComponent(context))
                                 .executes(ctx -> {
                                     for (Player player : getPlayers.apply(ctx)) {
                                         Component previous = NameData.DATA.get(player.getUUID()).getDisplayName();

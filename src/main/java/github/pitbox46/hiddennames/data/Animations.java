@@ -8,6 +8,7 @@ import net.minecraft.network.chat.TextColor;
 import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 import net.neoforged.bus.api.Event;
+import net.neoforged.neoforge.common.util.TriState;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import javax.annotation.Nonnull;
@@ -25,7 +26,7 @@ public class Animations {
     public static final Animation NO_ANIMATION = regAnimation(new Animation("null", (event, tick) -> {
         event.setContent(NameData.DATA.get(event.getEntity().getUUID()).getDisplayName());
     }));
-    public static final Animation HIDDEN = regAnimation(new Animation("hidden", (event, tick) -> event.setResult(Event.Result.DENY)));
+    public static final Animation HIDDEN = regAnimation(new Animation("hidden", (event, tick) -> event.setCanRender(TriState.FALSE)));
     public static final Animation BREATHE = regAnimation(new Animation("breathe", (event, tick) -> {
         int amp = 60;
         int cycle = 180;

@@ -6,22 +6,18 @@ import github.pitbox46.hiddennames.network.ClientPayloadHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.Event;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod;
-import net.neoforged.neoforge.client.event.ClientChatReceivedEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderNameTagEvent;
+import net.neoforged.neoforge.common.util.TriState;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 
-@Mod.EventBusSubscriber(value = Dist.CLIENT)
+@EventBusSubscriber(value = Dist.CLIENT)
 public class ClientEvents {
     @SubscribeEvent
     public static void onRenderNameplate(RenderNameTagEvent event) {
@@ -29,15 +25,17 @@ public class ClientEvents {
         if (event.getEntity() instanceof Player) {
             NameData nameData = NameData.DATA.get(event.getEntity().getUUID());
 
-            if (event.getEntity() == localPlayer && Config.SHOW_OWN.get() && !event.getEntity().isSpectator())
-                event.setResult(Event.Result.ALLOW);
-            if (nameData == null)
+            if (event.getEntity() == localPlayer && Config.SHOW_OWN.get() && !event.getEntity().isSpectator()) {
+                event.setCanRender(TriState.TRUE);
+            }
+            if (nameData == null) {
                 return;
-            if (nameData.getAnimation() != Animations.HIDDEN && ClientPayloadHandler.getInstance().doBlocksHide()) {
+            }
+            if (nameData.getAnimation() != Animations.HIDDEN && ClientPayloadHandler.doBlocksHide()) {
                 Vec3 vector3d = localPlayer.getEyePosition(event.getPartialTick());
                 Vec3 vector3d1 = event.getEntity().getEyePosition(event.getPartialTick());
                 if (localPlayer.level().clip(new ClipContext(vector3d, vector3d1, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, localPlayer)).getType() != HitResult.Type.MISS) {
-                    event.setResult(Event.Result.DENY);
+                    event.setCanRender(TriState.FALSE);
                     return;
                 }
             }

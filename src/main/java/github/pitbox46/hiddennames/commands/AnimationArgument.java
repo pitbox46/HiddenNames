@@ -17,7 +17,8 @@ import java.util.concurrent.CompletableFuture;
 
 public class AnimationArgument implements ArgumentType<Animation> {
     private static final Dynamic2CommandExceptionType INVALID_ANIMATION = new Dynamic2CommandExceptionType(
-            (found, constants) -> Component.literal(String.format("Animation key must be one of %s, found %s", constants, found)));
+            (found, constants) -> Component.literal(String.format("Animation key must be one of %s, found %s", constants, found))
+    );
 
     private AnimationArgument() {
     }
@@ -30,8 +31,9 @@ public class AnimationArgument implements ArgumentType<Animation> {
     public Animation parse(StringReader reader) throws CommandSyntaxException {
         String string = reader.readUnquotedString();
         Animation animation = Animations.getAnimationUnsafe(string);
-        if (animation == null)
+        if (animation == null) {
             throw INVALID_ANIMATION.create(string, Animations.getKeys().toString());
+        }
         return animation;
     }
 

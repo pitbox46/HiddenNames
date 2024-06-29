@@ -8,6 +8,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import github.pitbox46.hiddennames.Config;
 import github.pitbox46.hiddennames.network.BlocksHidePacket;
+import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -16,7 +17,7 @@ public class CommandBlocksHide implements Command<CommandSourceStack> {
 
     private static final CommandBlocksHide CMD = new CommandBlocksHide();
 
-    public static ArgumentBuilder<CommandSourceStack, ?> register(CommandDispatcher<CommandSourceStack> dispatcher) {
+    public static ArgumentBuilder<CommandSourceStack, ?> register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext context) {
         return Commands
                 .literal("blocksHideName")
                 .requires(cs -> cs.hasPermission(2))
@@ -28,7 +29,7 @@ public class CommandBlocksHide implements Command<CommandSourceStack> {
     public int run(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         Config.BLOCKS_HIDE.set(BoolArgumentType.getBool(context, "boolean"));
         Config.BLOCKS_HIDE.save();
-        PacketDistributor.ALL.noArg().send(new BlocksHidePacket(Config.BLOCKS_HIDE.get()));
+        PacketDistributor.sendToAllPlayers(new BlocksHidePacket(Config.BLOCKS_HIDE.get()));
         return 0;
     }
 }

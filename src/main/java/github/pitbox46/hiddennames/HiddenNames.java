@@ -9,16 +9,15 @@ import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.commands.synchronization.ArgumentTypeInfos;
 import net.minecraft.commands.synchronization.SingletonArgumentInfo;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.network.chat.Component;
-import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.ModLoadingContext;
+import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
-import net.neoforged.neoforge.network.registration.IPayloadRegistrar;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.handling.MainThreadPayloadHandler;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -38,39 +37,31 @@ public class HiddenNames {
                 () -> ArgumentTypeInfos.registerByClass(AnimationArgument.class, SingletonArgumentInfo.contextFree(AnimationArgument::animationArgument))
         );
 
-    public HiddenNames(IEventBus bus) {
-        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, Config.SERVER_CONFIG);
-        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Config.CLIENT_CONFIG);
+    public HiddenNames(ModContainer container) {
+        container.registerConfig(ModConfig.Type.SERVER, Config.SERVER_CONFIG);
+        container.registerConfig(ModConfig.Type.CLIENT, Config.CLIENT_CONFIG);
         NeoForge.EVENT_BUS.register(this);
         NeoForge.EVENT_BUS.register(ServerEvents.class);
-        bus.addListener(this::registerPackets);
-        ARG_TYPE_INFO_REG.register(bus);
+        container.getEventBus().addListener(this::registerPackets);
+        ARG_TYPE_INFO_REG.register(container.getEventBus());
     }
 
-    public void registerPackets(final RegisterPayloadHandlerEvent event) {
-        IPayloadRegistrar registrar = event.registrar(MODID);
-        registrar.play(BlocksHidePacket.ID, BlocksHidePacket::new, handler -> handler
-                .client((payload, context) -> {
-                    context.workHandler().submitAsync(() -> {
-                        ClientPayloadHandler.getInstance().handle(payload, context);
-                    }).exceptionally(e -> {
-                        context.packetHandler().disconnect(Component.literal(e.getMessage()));
-                        return null;
-                    });
-                }));
-        registrar.play(NameDataSyncPacket.ID, NameDataSyncPacket::new, handler -> handler
-                .client((payload, context) -> {
-                    context.workHandler().submitAsync(() -> {
-                        ClientPayloadHandler.getInstance().handle(payload, context);
-                    }).exceptionally(e -> {
-                        context.packetHandler().disconnect(Component.literal(e.getMessage()));
-                        return null;
-                    });
-                }));
+    public void registerPackets(final RegisterPayloadHandlersEvent event) {
+        PayloadRegistrar registrar = event.registrar(MODID);
+        registrar.playToClient(
+                BlocksHidePacket.TYPE,
+                BlocksHidePacket.CODEC,
+                new MainThreadPayloadHandler<>(ClientPayloadHandler::handle)
+        );
+        registrar.playToClient(
+                NameDataSyncPacket.TYPE,
+                NameDataSyncPacket.CODEC,
+                new MainThreadPayloadHandler<>(ClientPayloadHandler::handle)
+        );
     }
 
     @SubscribeEvent
     public void onRegisterCommands(RegisterCommandsEvent event) {
-        ModCommands.register(event.getDispatcher());
+        ModCommands.register(event.getDispatcher(), event.getBuildContext());
     }
 }

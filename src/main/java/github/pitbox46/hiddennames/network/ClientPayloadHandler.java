@@ -3,25 +3,20 @@ package github.pitbox46.hiddennames.network;
 import github.pitbox46.hiddennames.data.NameData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public class ClientPayloadHandler {
-    private static final ClientPayloadHandler INSTANCE = new ClientPayloadHandler();
-    private boolean blocksHide = false;
+    private static boolean blocksHide = false;
 
-    public static ClientPayloadHandler getInstance() {
-        return INSTANCE;
-    }
-
-    public boolean doBlocksHide() {
+    public static boolean doBlocksHide() {
         return blocksHide;
     }
 
-    public void handle(BlocksHidePacket packet, PlayPayloadContext ctx) {
+    public static void handle(BlocksHidePacket packet, IPayloadContext ctx) {
         blocksHide = packet.blocksHide();
     }
 
-    public void handle(NameDataSyncPacket packet, PlayPayloadContext ctx) {
+    public static void handle(NameDataSyncPacket packet, IPayloadContext ctx) {
         if (Minecraft.getInstance().level != null) {
             NameData data = packet.data();
             Player player = Minecraft.getInstance().level.getPlayerByUUID(data.getUuid());

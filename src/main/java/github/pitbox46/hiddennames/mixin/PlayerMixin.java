@@ -42,7 +42,9 @@ public abstract class PlayerMixin extends LivingEntity implements PlayerDuck {
 
     @Override
     public Component hiddenNames$getUnmodifiedDisplayName() {
-        if (this.displayname == null) this.displayname = net.neoforged.neoforge.event.EventHooks.getPlayerDisplayName((Player)(Object)this, this.getName());
+        if (this.displayname == null) {
+            this.displayname = net.neoforged.neoforge.event.EventHooks.getPlayerDisplayName((Player)(Object)this, this.getName());
+        }
         MutableComponent mutablecomponent = Component.literal("");
         mutablecomponent = prefixes.stream().reduce(mutablecomponent, MutableComponent::append);
         mutablecomponent = mutablecomponent.append(PlayerTeam.formatNameForTeam(this.getTeam(), this.displayname));

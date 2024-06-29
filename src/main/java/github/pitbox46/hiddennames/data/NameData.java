@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import github.pitbox46.hiddennames.Config;
 import github.pitbox46.hiddennames.PlayerDuck;
 import github.pitbox46.hiddennames.network.NameDataSyncPacket;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -15,10 +16,11 @@ import java.util.Map;
 import java.util.UUID;
 
 public class NameData {
+    public static final Component.SerializerAdapter COMPONENT_SERIALIZER = new Component.SerializerAdapter(RegistryAccess.EMPTY);
     /**
      * Instead of failing hard, we prefer to compute an error name
      */
-    public final static Map<UUID, NameData> DATA = new HashMap<>() {
+    public static final Map<UUID, NameData> DATA = new HashMap<>() {
         @Override
         public NameData get(Object key) {
             NameData data = super.get(key);
@@ -47,7 +49,7 @@ public class NameData {
     //TODO Consider only sending necessary packets rather than sending them all (only new players need all packets)
     public static void sendSyncData() {
         for (NameData data : DATA.values()) {
-            PacketDistributor.ALL.noArg().send(new NameDataSyncPacket(data));
+            PacketDistributor.sendToAllPlayers(new NameDataSyncPacket(data));
         }
     }
 
@@ -74,14 +76,14 @@ public class NameData {
     //region Serial
     public JsonObject serialize(JsonObject json) {
         json.addProperty("uuid", uuid.toString());
-        json.add("displayName", Component.Serializer.toJsonTree(displayName));
+        json.add("displayName", COMPONENT_SERIALIZER.serialize(displayName, Component.class, null));
         json.addProperty("animation", animation.key());
         return json;
     }
 
     public static NameData deserialize(JsonObject json) {
         UUID uuid = UUID.fromString(json.getAsJsonPrimitive("uuid").getAsString());
-        Component component = Component.Serializer.fromJson(json.get("displayName"));
+        Component component = COMPONENT_SERIALIZER.deserialize(json.get("displayName"), Component.class, null);
         Animation animation = Animations.getAnimation(json.getAsJsonPrimitive("animation").getAsString());
         return new NameData(uuid, component, animation);
     }

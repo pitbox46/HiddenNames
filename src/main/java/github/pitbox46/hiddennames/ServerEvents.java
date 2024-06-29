@@ -33,7 +33,7 @@ public class ServerEvents {
     public static void onJoinServer(PlayerEvent.PlayerLoggedInEvent event) {
         Player player = event.getEntity();
         NameData.DATA.computeIfAbsent(player.getUUID(), uuid -> new NameData(player));
-        PacketDistributor.PLAYER.with((ServerPlayer) player).send(new BlocksHidePacket(Config.BLOCKS_HIDE.get()));
+        PacketDistributor.sendToPlayer((ServerPlayer) player, new BlocksHidePacket(Config.BLOCKS_HIDE.get()));
         NameData.sendSyncData();
     }
 
