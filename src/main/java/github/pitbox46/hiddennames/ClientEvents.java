@@ -1,6 +1,5 @@
 package github.pitbox46.hiddennames;
 
-import github.pitbox46.hiddennames.data.Animations;
 import github.pitbox46.hiddennames.data.NameData;
 import github.pitbox46.hiddennames.network.ClientPayloadHandler;
 import net.minecraft.client.Minecraft;
@@ -31,7 +30,7 @@ public class ClientEvents {
             if (nameData == null) {
                 return;
             }
-            if (nameData.getAnimation() != Animations.HIDDEN && ClientPayloadHandler.doBlocksHide()) {
+            if (!nameData.getAnimation().isHidden() && ClientPayloadHandler.doBlocksHide()) {
                 Vec3 vector3d = localPlayer.getEyePosition(event.getPartialTick());
                 Vec3 vector3d1 = event.getEntity().getEyePosition(event.getPartialTick());
                 if (localPlayer.level().clip(new ClipContext(vector3d, vector3d1, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, localPlayer)).getType() != HitResult.Type.MISS) {
@@ -39,7 +38,7 @@ public class ClientEvents {
                     return;
                 }
             }
-            if (!Config.RENDER_ANIMATIONS.get() && nameData.getAnimation() != Animations.HIDDEN) {
+            if (!Config.RENDER_ANIMATIONS.get() && !nameData.getAnimation().isHidden()) {
                 return;
             }
 

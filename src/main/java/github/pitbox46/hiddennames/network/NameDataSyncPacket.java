@@ -19,9 +19,9 @@ public record NameDataSyncPacket(NameData data) implements CustomPacketPayload {
             packet -> packet.data().getUuid(),
             ComponentSerialization.STREAM_CODEC,
             packet -> packet.data().getDisplayName(),
-            ByteBufCodecs.stringUtf8(256),
+            ResourceLocation.STREAM_CODEC,
             packet -> packet.data().getAnimation().key(),
-            (uuid, component, key) -> new NameDataSyncPacket(new NameData(uuid, component, Animations.getAnimation(key)))
+            (uuid, component, key) -> new NameDataSyncPacket(new NameData(uuid, component, HiddenNames.ANIMATION_REGISTRY.get(key)))
     );
 
     @Override

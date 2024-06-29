@@ -2,13 +2,18 @@ package github.pitbox46.hiddennames;
 
 import github.pitbox46.hiddennames.commands.AnimationArgument;
 import github.pitbox46.hiddennames.commands.ModCommands;
+import github.pitbox46.hiddennames.data.Animation;
+import github.pitbox46.hiddennames.data.Animations;
 import github.pitbox46.hiddennames.network.BlocksHidePacket;
 import github.pitbox46.hiddennames.network.ClientPayloadHandler;
 import github.pitbox46.hiddennames.network.NameDataSyncPacket;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.commands.synchronization.ArgumentTypeInfos;
 import net.minecraft.commands.synchronization.SingletonArgumentInfo;
+import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
@@ -19,6 +24,8 @@ import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.handling.MainThreadPayloadHandler;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.NewRegistryEvent;
+import net.neoforged.neoforge.registries.RegistryBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -30,12 +37,21 @@ public class HiddenNames {
     private static final Logger LOGGER = LogManager.getLogger();
     public static JsonData JSON;
 
+    //region Registries
+    public static final ResourceKey<Registry<Animation>> ANIMATION_REGISTRY_KEY =
+            ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(MODID, "animations"));
+    public static final Registry<Animation> ANIMATION_REGISTRY = new RegistryBuilder<>(ANIMATION_REGISTRY_KEY)
+            .sync(true)
+            .defaultKey(ResourceLocation.fromNamespaceAndPath(MODID, "null"))
+            .create();
+
     public static final DeferredRegister<ArgumentTypeInfo<?, ?>> ARG_TYPE_INFO_REG = DeferredRegister.create(Registries.COMMAND_ARGUMENT_TYPE, MODID);
     public static final Supplier<ArgumentTypeInfo<AnimationArgument, SingletonArgumentInfo<AnimationArgument>.Template>> ANIMATION_ARG =
         ARG_TYPE_INFO_REG.register(
                 "animation_arg",
                 () -> ArgumentTypeInfos.registerByClass(AnimationArgument.class, SingletonArgumentInfo.contextFree(AnimationArgument::animationArgument))
         );
+    //endregion Registries
 
     public HiddenNames(ModContainer container) {
         container.registerConfig(ModConfig.Type.SERVER, Config.SERVER_CONFIG);
@@ -43,7 +59,13 @@ public class HiddenNames {
         NeoForge.EVENT_BUS.register(this);
         NeoForge.EVENT_BUS.register(ServerEvents.class);
         container.getEventBus().addListener(this::registerPackets);
+        container.getEventBus().addListener(this::registerRegistries);
         ARG_TYPE_INFO_REG.register(container.getEventBus());
+        Animations.ANIMATIONS.register(container.getEventBus());
+    }
+
+    public void registerRegistries(NewRegistryEvent event) {
+        event.register(ANIMATION_REGISTRY);
     }
 
     public void registerPackets(final RegisterPayloadHandlersEvent event) {

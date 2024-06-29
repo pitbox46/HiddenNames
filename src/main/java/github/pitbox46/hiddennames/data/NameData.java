@@ -3,10 +3,12 @@ package github.pitbox46.hiddennames.data;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import github.pitbox46.hiddennames.Config;
+import github.pitbox46.hiddennames.HiddenNames;
 import github.pitbox46.hiddennames.PlayerDuck;
 import github.pitbox46.hiddennames.network.NameDataSyncPacket;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.PacketDistributor;
 
@@ -24,7 +26,7 @@ public class NameData {
         @Override
         public NameData get(Object key) {
             NameData data = super.get(key);
-            return data != null ? data : new NameData((UUID) key, Component.literal("ERROR_DESYNC:" + key.toString()), Animations.NO_ANIMATION);
+            return data != null ? data : new NameData((UUID) key, Component.literal("ERROR_DESYNC:" + key.toString()), Animations.NO_ANIMATION.get());
         }
     };
 
@@ -33,7 +35,7 @@ public class NameData {
     private Animation animation;
 
     public NameData(Player player) {
-        this(player, Config.DEFAULT_VISIBLE.get() ? Animations.NO_ANIMATION: Animations.HIDDEN);
+        this(player, Config.DEFAULT_VISIBLE.get() ? Animations.NO_ANIMATION.get(): Animations.HIDDEN.get());
     }
 
     public NameData(Player player, @Nonnull Animation animation) {
@@ -66,25 +68,25 @@ public class NameData {
     }
 
     public Animation getAnimation() {
-        return animation == null ? Animations.NO_ANIMATION : animation;
+        return animation == null ? Animations.NO_ANIMATION.get() : animation;
     }
 
     public void setAnimation(Animation animation) {
-        this.animation = animation == null ? Animations.NO_ANIMATION : animation;
+        this.animation = animation == null ? Animations.NO_ANIMATION.get() : animation;
     }
 
     //region Serial
     public JsonObject serialize(JsonObject json) {
         json.addProperty("uuid", uuid.toString());
         json.add("displayName", COMPONENT_SERIALIZER.serialize(displayName, Component.class, null));
-        json.addProperty("animation", animation.key());
+        json.addProperty("animation", animation.key().toString());
         return json;
     }
 
     public static NameData deserialize(JsonObject json) {
         UUID uuid = UUID.fromString(json.getAsJsonPrimitive("uuid").getAsString());
         Component component = COMPONENT_SERIALIZER.deserialize(json.get("displayName"), Component.class, null);
-        Animation animation = Animations.getAnimation(json.getAsJsonPrimitive("animation").getAsString());
+        Animation animation = HiddenNames.ANIMATION_REGISTRY.get(ResourceLocation.parse(json.getAsJsonPrimitive("animation").getAsString()));
         return new NameData(uuid, component, animation);
     }
 

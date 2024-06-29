@@ -23,9 +23,9 @@ public class CommandSetVisible {
                                         boolean flag = ctx.getArgument("boolean", Boolean.class);
                                         NameData data = NameData.DATA.get(player.getUUID());
                                         if (!flag) {
-                                            data.setAnimation(Animations.HIDDEN);
-                                        } else if (data.getAnimation() == Animations.HIDDEN) {
-                                            data.setAnimation(Animations.NO_ANIMATION);
+                                            data.setAnimation(Animations.HIDDEN.get());
+                                        } else if (data.getAnimation().isHidden()) {
+                                            data.setAnimation(Animations.NO_ANIMATION.get());
                                         }
                                     }
                                     NameData.sendSyncData();

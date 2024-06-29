@@ -7,10 +7,11 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.Dynamic2CommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import github.pitbox46.hiddennames.HiddenNames;
 import github.pitbox46.hiddennames.data.Animation;
-import github.pitbox46.hiddennames.data.Animations;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
@@ -29,21 +30,20 @@ public class AnimationArgument implements ArgumentType<Animation> {
 
     @Override
     public Animation parse(StringReader reader) throws CommandSyntaxException {
-        String string = reader.readUnquotedString();
-        Animation animation = Animations.getAnimationUnsafe(string);
-        if (animation == null) {
-            throw INVALID_ANIMATION.create(string, Animations.getKeys().toString());
+        ResourceLocation key = ResourceLocation.read(reader);
+        if (!HiddenNames.ANIMATION_REGISTRY.keySet().contains(key)) {
+            throw INVALID_ANIMATION.create(key, HiddenNames.ANIMATION_REGISTRY.keySet().stream().map(ResourceLocation::toString).toList());
         }
-        return animation;
+        return HiddenNames.ANIMATION_REGISTRY.get(key);
     }
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-        return SharedSuggestionProvider.suggest(Animations.getKeys(), builder);
+        return SharedSuggestionProvider.suggest(HiddenNames.ANIMATION_REGISTRY.keySet().stream().map(ResourceLocation::toString), builder);
     }
 
     @Override
     public Collection<String> getExamples() {
-        return Animations.getKeys();
+        return HiddenNames.ANIMATION_REGISTRY.keySet().stream().limit(5).map(ResourceLocation::toString).toList();
     }
 }
