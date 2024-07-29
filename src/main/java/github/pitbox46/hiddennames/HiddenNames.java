@@ -18,6 +18,8 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
+import net.neoforged.neoforge.client.gui.ConfigurationScreen;
+import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
@@ -56,6 +58,7 @@ public class HiddenNames {
     public HiddenNames(ModContainer container) {
         container.registerConfig(ModConfig.Type.SERVER, Config.SERVER_CONFIG);
         container.registerConfig(ModConfig.Type.CLIENT, Config.CLIENT_CONFIG);
+        container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
         NeoForge.EVENT_BUS.register(this);
         NeoForge.EVENT_BUS.register(ServerEvents.class);
         container.getEventBus().addListener(this::registerPackets);
