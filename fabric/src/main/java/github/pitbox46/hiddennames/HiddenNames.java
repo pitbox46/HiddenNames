@@ -1,7 +1,6 @@
 package github.pitbox46.hiddennames;
 
 import fuzs.forgeconfigapiport.fabric.api.neoforge.v4.NeoForgeConfigRegistry;
-import fuzs.forgeconfigapiport.fabric.api.neoforge.v4.client.ConfigScreenFactoryRegistry;
 import github.pitbox46.hiddennames.commands.AnimationArgument;
 import github.pitbox46.hiddennames.commands.ModCommands;
 import github.pitbox46.hiddennames.data.Animation;
@@ -19,17 +18,21 @@ import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.ChatFormatting;
 import net.minecraft.commands.synchronization.SingletonArgumentInfo;
 import net.minecraft.core.Registry;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.scores.Team;
 import net.neoforged.fml.config.ModConfig;
-import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 
@@ -114,5 +117,18 @@ public class HiddenNames implements ModInitializer {
         for (ServerPlayer player : HiddenNames.server.getPlayerList().getPlayers()) {
             ServerPlayNetworking.send(player, payload);
         }
+    }
+
+    /**
+     *
+     * @return The name with team colors if the config option is set to have team colors override
+     */
+    public static MutableComponent getCorrectedName(Component name, @Nullable Team team) {
+        ChatFormatting color;
+        MutableComponent nameCopy = name.copy();
+        if (Config.TEAM_OVERRIDE.get() && team != null && (color = team.getColor()) != ChatFormatting.RESET) {
+            nameCopy = nameCopy.withColor(color.getColor());
+        }
+        return nameCopy;
     }
 }

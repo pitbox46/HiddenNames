@@ -1,13 +1,10 @@
 package github.pitbox46.hiddennames.network;
 
 import github.pitbox46.hiddennames.HiddenNames;
-import github.pitbox46.hiddennames.data.Animations;
 import github.pitbox46.hiddennames.data.NameData;
 import net.minecraft.core.UUIDUtil;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.ComponentSerialization;
-import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;

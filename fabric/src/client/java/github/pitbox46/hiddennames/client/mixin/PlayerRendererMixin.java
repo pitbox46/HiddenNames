@@ -2,6 +2,7 @@ package github.pitbox46.hiddennames.client.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import github.pitbox46.hiddennames.Config;
+import github.pitbox46.hiddennames.HiddenNames;
 import github.pitbox46.hiddennames.client.ClientPayloadHandler;
 import github.pitbox46.hiddennames.data.Animation;
 import github.pitbox46.hiddennames.data.NameData;
@@ -53,6 +54,7 @@ public abstract class PlayerRendererMixin extends LivingEntityRenderer<AbstractC
             Animation.Return returnData = nameData.getAnimation().renderer().apply(new Animation.Input(
                     player,
                     component,
+                    HiddenNames.getCorrectedName(NameData.DATA.get(player.getUUID()).getDisplayName(), player.getTeam()),
                     Minecraft.getInstance().level.getGameTime() + player.getId() * 21L
             ));
             if (returnData.show()) {

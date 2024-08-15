@@ -1,5 +1,6 @@
 package github.pitbox46.hiddennames.mixin;
 
+import github.pitbox46.hiddennames.HiddenNames;
 import github.pitbox46.hiddennames.data.NameData;
 import net.minecraft.client.gui.components.PlayerTabOverlay;
 import net.minecraft.client.multiplayer.PlayerInfo;
@@ -21,7 +22,10 @@ public abstract class PlayerTabOverlayMixin {
     @Overwrite
     public Component getNameForDisplay(PlayerInfo playerInfo) {
         if (NameData.DATA.containsKey(playerInfo.getProfile().getId())) {
-            Component name = NameData.DATA.get(playerInfo.getProfile().getId()).getDisplayName().copy();
+            Component name = HiddenNames.getCorrectedName(
+                    NameData.DATA.get(playerInfo.getProfile().getId()).getDisplayName(),
+                    playerInfo.getTeam()
+            );
             return this.decorateName(playerInfo, PlayerTeam.formatNameForTeam(playerInfo.getTeam(), name));
         }
 

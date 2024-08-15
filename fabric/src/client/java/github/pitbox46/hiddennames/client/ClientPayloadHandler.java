@@ -5,8 +5,6 @@ import github.pitbox46.hiddennames.network.BlocksHidePacket;
 import github.pitbox46.hiddennames.network.NameDataSyncPacket;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.PlayerInfo;
-import net.minecraft.world.scores.PlayerTeam;
 
 import java.util.UUID;
 
@@ -26,11 +24,6 @@ public class ClientPayloadHandler {
             NameData data = packet.data();
             UUID uuid = data.getUuid();
             NameData.DATA.put(uuid, data);
-
-            PlayerInfo playerInfo = Minecraft.getInstance().player.connection.getPlayerInfo(uuid);
-            if (playerInfo != null) {
-                playerInfo.setTabListDisplayName(PlayerTeam.formatNameForTeam(playerInfo.getTeam(), NameData.DATA.get(uuid).getDisplayName()));
-            }
         }
     }
 }

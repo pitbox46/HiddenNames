@@ -10,15 +10,11 @@ import java.util.function.Function;
 public record Animation(ResourceLocation key, Function<Input, Return> renderer) {
     public static final ResourceLocation HIDDEN_KEY = ResourceLocation.fromNamespaceAndPath(HiddenNames.MODID, "hidden");
 
-    public void render(Input input) {
-        renderer().apply(input);
-    }
-
     public boolean isHidden() {
         return key().equals(HIDDEN_KEY);
     }
 
-    public record Input(Player player, Component name, long tick) {
+    public record Input(Player player, Component ogName, Component displayName, long tick) {
 
     }
 

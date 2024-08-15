@@ -12,7 +12,7 @@ import net.minecraft.util.Mth;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.apache.commons.lang3.RandomStringUtils;
 
-import java.util.*;
+import java.util.Random;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
@@ -23,11 +23,11 @@ public class Animations {
     //We don't actually need these static fields for most of these. They're just for convenience if they're needed in the code somewhere later
     public static final Supplier<Animation> NO_ANIMATION = register(
             "null",
-            (input) -> new Animation.Return(NameData.DATA.get(input.player().getUUID()).getDisplayName(), true)
+            (input) -> new Animation.Return(input.displayName(), true)
     );
     public static final Supplier<Animation> HIDDEN = register(
             "hidden",
-            (input) -> new Animation.Return(input.name(), false)
+            (input) -> new Animation.Return(input.ogName(), false)
     );
     public static final Supplier<Animation> BREATHE = register(
             "breathe",
@@ -35,7 +35,7 @@ public class Animations {
                 int amp = 60;
                 int cycle = 180;
 
-                Component displayName = NameData.DATA.get(input.player().getUUID()).getDisplayName();
+                Component displayName = input.displayName();
 
                 TextColor color = displayName.getStyle().getColor();
                 if (color == null) {
@@ -60,7 +60,7 @@ public class Animations {
     public static final Supplier<Animation> RAINBOW = register(
             "rainbow",
             (input) -> {
-                Component displayName = NameData.DATA.get(input.player().getUUID()).getDisplayName();
+                Component displayName = input.displayName();
 
                 MutableComponent newName = Component.literal("");
                 int i = 0;
@@ -74,7 +74,7 @@ public class Animations {
     public static final Supplier<Animation> CYCLE = register(
             "cycle",
             (input) -> {
-                Component displayName = NameData.DATA.get(input.player().getUUID()).getDisplayName();
+                Component displayName = input.displayName();
 
                 int toNext = 80;
 

@@ -7,13 +7,17 @@ import github.pitbox46.hiddennames.data.Animations;
 import github.pitbox46.hiddennames.network.BlocksHidePacket;
 import github.pitbox46.hiddennames.network.ClientPayloadHandler;
 import github.pitbox46.hiddennames.network.NameDataSyncPacket;
+import net.minecraft.ChatFormatting;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.commands.synchronization.ArgumentTypeInfos;
 import net.minecraft.commands.synchronization.SingletonArgumentInfo;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.scores.Team;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
@@ -30,6 +34,7 @@ import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.RegistryBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Supplier;
 
@@ -88,5 +93,18 @@ public class HiddenNames {
     @SubscribeEvent
     public void onRegisterCommands(RegisterCommandsEvent event) {
         ModCommands.register(event.getDispatcher(), event.getBuildContext());
+    }
+
+    /**
+     *
+     * @return The name with team colors if the config option is set to have team colors override
+     */
+    public static MutableComponent getCorrectedName(Component name, @Nullable Team team) {
+        ChatFormatting color;
+        MutableComponent nameCopy = name.copy();
+        if (Config.TEAM_OVERRIDE.get() && team != null && (color = team.getColor()) != ChatFormatting.RESET) {
+            nameCopy = nameCopy.withColor(color.getColor());
+        }
+        return nameCopy;
     }
 }
