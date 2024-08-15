@@ -13,8 +13,8 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.Redirect;
 
 import java.util.Collection;
 
@@ -29,25 +29,21 @@ public abstract class PlayerMixin extends LivingEntity implements PlayerDuck {
         super(pEntityType, pLevel);
     }
 
-    @Inject(at = @At(value = "RETURN"), method = "getDisplayName", cancellable = true)
-    private void replaceDisplayName(CallbackInfoReturnable<Component> cir) {
+    @ModifyArg(method = "getDisplayName", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/scores/PlayerTeam;formatNameForTeam(Lnet/minecraft/world/scores/Team;Lnet/minecraft/network/chat/Component;)Lnet/minecraft/network/chat/MutableComponent;"))
+    private Component replaceDisplayName(Component pPlayerName) {
         if (NameData.DATA.containsKey(getUUID())) {
-            MutableComponent name = (MutableComponent) NameData.DATA.get(getUUID()).getDisplayName();
-            if (name.getStyle().getClickEvent() == null) {
-                name = decorateDisplayNameComponent(name);
-            }
-            cir.setReturnValue(name);
+            return NameData.DATA.get(getUUID()).getDisplayName();
         }
+        return pPlayerName;
     }
 
-//    @Inject(at = @At(value = "HEAD"), method = "getScoreboardName", cancellable = true)
-//    private void replaceScoreboardName(CallbackInfoReturnable<String> cir) {
-//        if (NameData.DATA.containsKey(getUUID())) {
-//            cir.setReturnValue(NameData.DATA.get(getUUID()).getDisplayName().getString());
-//        }
-//    }
-
-
+    @Redirect(method = "getDisplayName", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;decorateDisplayNameComponent(Lnet/minecraft/network/chat/MutableComponent;)Lnet/minecraft/network/chat/MutableComponent;"))
+    private MutableComponent replaceDecorateDisplayName(Player instance, MutableComponent pDisplayName) {
+        if (pDisplayName.getStyle().getClickEvent() == null) {
+            pDisplayName = decorateDisplayNameComponent(pDisplayName);
+        }
+        return pDisplayName;
+    }
 
     @Override
     public Component hiddenNames$getUnmodifiedDisplayName() {
