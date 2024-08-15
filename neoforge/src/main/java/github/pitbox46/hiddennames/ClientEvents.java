@@ -1,5 +1,6 @@
 package github.pitbox46.hiddennames;
 
+import github.pitbox46.hiddennames.data.Animation;
 import github.pitbox46.hiddennames.data.NameData;
 import github.pitbox46.hiddennames.network.ClientPayloadHandler;
 import net.minecraft.client.Minecraft;
@@ -21,10 +22,10 @@ public class ClientEvents {
     @SubscribeEvent
     public static void onRenderNameplate(RenderNameTagEvent event) {
         Player localPlayer = Minecraft.getInstance().player;
-        if (event.getEntity() instanceof Player) {
+        if (event.getEntity() instanceof Player player) {
             NameData nameData = NameData.DATA.get(event.getEntity().getUUID());
 
-            if (event.getEntity() == localPlayer && Config.SHOW_OWN.get() && !event.getEntity().isSpectator()) {
+            if (player == localPlayer && Config.SHOW_OWN.get() && !player.isSpectator()) {
                 event.setCanRender(TriState.TRUE);
             }
             if (nameData == null) {
@@ -32,7 +33,7 @@ public class ClientEvents {
             }
             if (!nameData.getAnimation().isHidden() && ClientPayloadHandler.doBlocksHide()) {
                 Vec3 vector3d = localPlayer.getEyePosition(event.getPartialTick());
-                Vec3 vector3d1 = event.getEntity().getEyePosition(event.getPartialTick());
+                Vec3 vector3d1 = player.getEyePosition(event.getPartialTick());
                 if (localPlayer.level().clip(new ClipContext(vector3d, vector3d1, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, localPlayer)).getType() != HitResult.Type.MISS) {
                     event.setCanRender(TriState.FALSE);
                     return;
@@ -42,8 +43,16 @@ public class ClientEvents {
                 return;
             }
 
-            //The addition is an offset so each player doesn't have the same animation go at the same time
-            nameData.getAnimation().renderer().accept(event, Minecraft.getInstance().level.getGameTime() + event.getEntity().getId() * 21L);
+            Animation.Return returnData = nameData.getAnimation().renderer().apply(new Animation.Input(
+                    player,
+                    event.getContent(),
+                    Minecraft.getInstance().level.getGameTime() + player.getId() * 21L
+            ));
+            if (returnData.show()) {
+                event.setContent(returnData.name());
+            } else {
+                event.setCanRender(TriState.FALSE);
+            }
         }
     }
 
