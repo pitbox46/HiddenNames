@@ -10,12 +10,20 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.RenderNameTagEvent;
+import net.neoforged.neoforge.client.gui.ConfigurationScreen;
+import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.common.util.TriState;
 
 @EventBusSubscriber(value = Dist.CLIENT)
 public class ClientEvents {
+    public static void onClientSetup(FMLClientSetupEvent clientSetupEvent, ModContainer container) {
+        container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
+    }
+
     @SubscribeEvent
     public static void onRenderNameplate(RenderNameTagEvent event) {
         Player localPlayer = Minecraft.getInstance().player;

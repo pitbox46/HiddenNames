@@ -18,10 +18,12 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.scores.Team;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.common.NeoForge;
@@ -60,12 +62,12 @@ public class HiddenNames {
         );
     //endregion Registries
 
-    public HiddenNames(ModContainer container) {
+    public HiddenNames(IEventBus modEventBus, ModContainer container) {
         container.registerConfig(ModConfig.Type.SERVER, Config.SERVER_CONFIG);
         container.registerConfig(ModConfig.Type.CLIENT, Config.CLIENT_CONFIG);
-        container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
         NeoForge.EVENT_BUS.register(this);
         NeoForge.EVENT_BUS.register(ServerEvents.class);
+        container.getEventBus().<FMLClientSetupEvent>addListener(event -> ClientEvents.onClientSetup(event, container));
         container.getEventBus().addListener(this::registerPackets);
         container.getEventBus().addListener(this::registerRegistries);
         ARG_TYPE_INFO_REG.register(container.getEventBus());
