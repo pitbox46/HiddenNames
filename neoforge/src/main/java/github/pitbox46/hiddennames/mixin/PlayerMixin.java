@@ -32,7 +32,7 @@ public abstract class PlayerMixin extends LivingEntity implements PlayerDuck {
     @ModifyArg(method = "getDisplayName", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/scores/PlayerTeam;formatNameForTeam(Lnet/minecraft/world/scores/Team;Lnet/minecraft/network/chat/Component;)Lnet/minecraft/network/chat/MutableComponent;"))
     private Component replaceDisplayName(Component pPlayerName) {
         if (NameData.DATA.containsKey(getUUID())) {
-            return NameData.DATA.get(getUUID()).getDisplayName();
+            return NameData.DATA.get(getUUID()).getDisplayName().copy();
         }
         return pPlayerName;
     }

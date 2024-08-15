@@ -8,7 +8,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.scores.PlayerTeam;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -19,6 +18,8 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public abstract class PlayerMixin extends LivingEntity implements PlayerDuck {
     @Shadow protected abstract MutableComponent decorateDisplayNameComponent(MutableComponent p_36219_);
 
+    @Shadow public abstract Component getName();
+
     protected PlayerMixin(EntityType<? extends LivingEntity> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
     }
@@ -26,7 +27,7 @@ public abstract class PlayerMixin extends LivingEntity implements PlayerDuck {
     @ModifyArg(method = "getDisplayName", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/scores/PlayerTeam;formatNameForTeam(Lnet/minecraft/world/scores/Team;Lnet/minecraft/network/chat/Component;)Lnet/minecraft/network/chat/MutableComponent;"))
     private Component replaceDisplayName(Component pPlayerName) {
         if (NameData.DATA.containsKey(getUUID())) {
-            return NameData.DATA.get(getUUID()).getDisplayName();
+            return NameData.DATA.get(getUUID()).getDisplayName().copy();
         }
         return pPlayerName;
     }
@@ -41,7 +42,6 @@ public abstract class PlayerMixin extends LivingEntity implements PlayerDuck {
 
     @Override
     public Component hiddenNames$getUnmodifiedDisplayName() {
-        MutableComponent mutableComponent = PlayerTeam.formatNameForTeam(this.getTeam(), this.getName());
-        return this.decorateDisplayNameComponent(mutableComponent);
+        return this.decorateDisplayNameComponent(this.getName().copy());
     }
 }
