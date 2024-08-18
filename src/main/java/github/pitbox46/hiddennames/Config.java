@@ -8,6 +8,7 @@ public class Config {
 
     public static ForgeConfigSpec.BooleanValue DEFAULT_VISIBLE;
     public static ForgeConfigSpec.BooleanValue BLOCKS_HIDE;
+    public static ForgeConfigSpec.BooleanValue TEAM_OVERRIDE;
     public static ForgeConfigSpec.BooleanValue SHOW_OWN;
     public static ForgeConfigSpec.BooleanValue RENDER_ANIMATIONS;
 
@@ -22,7 +23,9 @@ public class Config {
 
         BLOCKS_HIDE = SERVER_BUILDER.comment("Blocks hide nameplates. False is normal Minecraft nameplate rendering")
                 .define("blocks_hide", false);
-
+        TEAM_OVERRIDE = SERVER_BUILDER
+                .comment("Team color overrides individual player color")
+                .define("team_override", true);
         SERVER_BUILDER.pop();
         SERVER_CONFIG = SERVER_BUILDER.build();
     }

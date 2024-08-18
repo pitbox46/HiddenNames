@@ -1,5 +1,6 @@
 package github.pitbox46.hiddennames;
 
+import github.pitbox46.hiddennames.data.Animation;
 import github.pitbox46.hiddennames.data.Animations;
 import github.pitbox46.hiddennames.data.NameData;
 import github.pitbox46.hiddennames.network.ClientProxy;
@@ -9,10 +10,12 @@ import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.contents.TranslatableContents;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.scores.Team;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.RenderNameTagEvent;
@@ -26,7 +29,7 @@ public class ClientEvents {
     @SubscribeEvent
     public static void onRenderNameplate(RenderNameTagEvent event) {
         Player localPlayer = Minecraft.getInstance().player;
-        if (event.getEntity() instanceof Player) {
+        if (event.getEntity() instanceof Player player) {
             NameData nameData = NameData.DATA.get(event.getEntity().getUUID());
 
             if (event.getEntity() == localPlayer && Config.SHOW_OWN.get() && !event.getEntity().isSpectator())
@@ -45,17 +48,18 @@ public class ClientEvents {
                 return;
             }
 
-            //The addition is an offset so each player doesn't have the same animation go at the same time
-            nameData.getAnimation().renderer().accept(event, Minecraft.getInstance().level.getGameTime() + event.getEntity().getId() * 21L);
-        }
-    }
+            Team team = player.getTeam();
 
-    @SubscribeEvent
-    public static void onNameFormat(PlayerEvent.NameFormat event) {
-        if (NameData.DATA.get(event.getEntity().getUUID()) != null && event.getEntity() instanceof AbstractClientPlayer) {
-            PlayerInfo playerInfo = Minecraft.getInstance().player.connection.getPlayerInfo(event.getEntity().getUUID());
-            if (playerInfo != null) {
-                playerInfo.setTabListDisplayName(NameData.DATA.get(event.getEntity().getUUID()).getDisplayName());
+            Animation.Return returnData = nameData.getAnimation().renderer().apply(new Animation.Input(
+                    player,
+                    event.getContent(),
+                    HiddenNames.getCorrectedName(NameData.DATA.get(player.getUUID()).getDisplayName(), team),
+                    Minecraft.getInstance().level.getGameTime() + player.getId() * 21L
+            ));
+            if (returnData.show()) {
+                event.setContent(HiddenNames.getFullNameplate(returnData.name(), team));
+            } else {
+                event.setResult(Event.Result.DENY);
             }
         }
     }

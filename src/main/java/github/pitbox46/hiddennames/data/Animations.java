@@ -24,76 +24,91 @@ public class Animations {
     private static final Map<String, Animation> ANIMATIONS = new HashMap<>();
 
     //We don't actually need these static fields for most of these. They're just for convenience if they're needed in the code somewhere later
-    public static final Animation NO_ANIMATION = regAnimation(new Animation("null", (event, tick) -> {
-        event.setContent(NameData.DATA.get(event.getEntity().getUUID()).getDisplayName());
-    }));
-    public static final Animation HIDDEN = regAnimation(new Animation("hidden", (event, tick) -> event.setResult(Event.Result.DENY)));
-    public static final Animation BREATHE = regAnimation(new Animation("breathe", (event, tick) -> {
-        int amp = 60;
-        int cycle = 180;
+    public static final Animation NO_ANIMATION = regAnimation(new Animation(
+            "null",
+            (input) -> new Animation.Return(input.displayName(), true)
+    ));
+    public static final Animation HIDDEN = regAnimation(new Animation(
+            "hidden",
+            (input) -> new Animation.Return(input.ogName(), false)
+    ));
+    public static final Animation BREATHE = regAnimation(new Animation(
+            "breathe",
+            (input) -> {
+                int amp = 60;
+                int cycle = 180;
 
-        Component displayName = NameData.DATA.get(event.getEntity().getUUID()).getDisplayName();
+                Component displayName = input.displayName();
 
+                TextColor color = displayName.getStyle().getColor();
+                if (color == null) {
+                    color = TextColor.fromLegacyFormat(ChatFormatting.WHITE);
+                }
+                int primaryColor = color.getValue();
+                int red = FastColor.ARGB32.red(primaryColor);
+                int green = FastColor.ARGB32.green(primaryColor);
+                int blue = FastColor.ARGB32.blue(primaryColor);
 
-        TextColor color = displayName.getStyle().getColor();
-        if (color == null) {
-            color = TextColor.fromLegacyFormat(ChatFormatting.WHITE);
-        }
-        int primaryColor = color.getValue();
-        int red = FastColor.ARGB32.red(primaryColor);
-        int green = FastColor.ARGB32.green(primaryColor);
-        int blue = FastColor.ARGB32.blue(primaryColor);
+                double sin = Math.sin((input.tick() % 360) * 2 * Math.PI / cycle);
+                double newRed = red + (amp * sin);
+                double newGreen = green + (amp * sin);
+                double newBlue = blue + (amp * sin);
 
-        double sin = Math.sin((tick % 360) * 2 * Math.PI / cycle);
-        double newRed = red + (amp * sin);
-        double newGreen = green + (amp * sin);
-        double newBlue = blue + (amp * sin);
+                MutableComponent newName = displayName.copy();
+                newName.setStyle(displayName.getStyle().withColor(TextColor.fromRgb(FastColor.ARGB32.color(255, roundToByte(newRed), roundToByte(newGreen), roundToByte(newBlue)))));
 
-        MutableComponent newName = displayName.copy();
-        newName.setStyle(displayName.getStyle().withColor(TextColor.fromRgb(FastColor.ARGB32.color(255, roundToByte(newRed), roundToByte(newGreen), roundToByte(newBlue)))));
+                return new Animation.Return(newName, true);
+            })
+    );
+    public static final Animation RAINBOW = regAnimation(new Animation(
+            "rainbow",
+            (input) -> {
+                Component displayName = input.displayName();
 
-        event.setContent(newName);
-    }));
-    public static final Animation RAINBOW = regAnimation(new Animation("rainbow", (event, tick) -> {
-        Component displayName = NameData.DATA.get(event.getEntity().getUUID()).getDisplayName();
+                MutableComponent newName = Component.literal("");
+                int i = 0;
+                for (char c : displayName.getString().toCharArray()) {
+                    newName.append(Component.literal(String.valueOf(c)).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Mth.hsvToRgb(((input.tick() + 3 * i) % 180) / 180F, 1, 1)))));
+                    i++;
+                }
+                return new Animation.Return(newName, true);
+            })
+    );
+    public static final Animation CYCLE = regAnimation(new Animation(
+            "cycle",
+            (input) -> {
+                Component displayName = input.displayName();
 
-        MutableComponent newName = Component.literal("");
-        int i = 0;
-        for (char c : displayName.getString().toCharArray()) {
-            newName.append(Component.literal(String.valueOf(c)).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Mth.hsvToRgb(((tick + 3 * i) % 180) / 180F, 1, 1)))));
-            i++;
-        }
-        event.setContent(newName);
-    }));
-    public static final Animation CYCLE = regAnimation(new Animation("cycle", (event, tick) -> {
-        Component displayName = NameData.DATA.get(event.getEntity().getUUID()).getDisplayName();
+                int toNext = 80;
 
-        int toNext = 80;
+                Random rng = new Random(input.player().getId());
+                IntStream stream = rng.ints();
 
-        Random rng = new Random(event.getEntity().getId());
-        IntStream stream = rng.ints();
+                TextColor color1 = TextColor.fromRgb(stream.skip(input.tick() / toNext).findFirst().orElseThrow());
+                TextColor color2 = TextColor.fromRgb(rng.nextInt());
 
-        TextColor color1 = TextColor.fromRgb(stream.skip(tick / toNext).findFirst().orElseThrow());
-        TextColor color2 = TextColor.fromRgb(rng.nextInt());
+                MutableComponent newName = displayName.copy();
+                newName.setStyle(newName.getStyle().withColor(blendColors(color1, color2, (float) (toNext - input.tick() % toNext) / toNext)));
 
-        MutableComponent newName = displayName.copy();
-        newName.setStyle(newName.getStyle().withColor(blendColors(color1, color2, (float) (toNext - tick % toNext) / toNext)));
+                return new Animation.Return(newName, true);
+            })
+    );
+    public static final Animation RANDOM = regAnimation(new Animation(
+            "random",
+            (input) -> {
+                int toNext = 15;
+                Random rng = new Random(input.player().getId() * (input.tick() / toNext));
 
-        event.setContent(newName);
-    }));
-    public static final Animation RANDOM = regAnimation(new Animation("random", (event, tick) -> {
-        int toNext = 15;
-        Random rng = new Random(event.getEntity().getId() * (tick / toNext));
+                String name = RandomStringUtils.random(rng.nextInt(3, 10), 32, 127, false, false, null, rng);
 
-        String name = RandomStringUtils.random(rng.nextInt(3, 10), 32, 127, false, false, null, rng);
+                MutableComponent newName = Component.literal("");
+                for (char c : name.toCharArray()) {
+                    newName.append(Component.literal(String.valueOf(c)).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(rng.nextInt()))));
+                }
 
-        MutableComponent newName = Component.literal("");
-        for (char c : name.toCharArray()) {
-            newName.append(Component.literal(String.valueOf(c)).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(rng.nextInt()))));
-        }
-
-        event.setContent(newName);
-    }));
+                return new Animation.Return(newName, true);
+            })
+    );
 
     /**
      * This method is all you will have to call to register an animation.

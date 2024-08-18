@@ -1,11 +1,15 @@
 package github.pitbox46.hiddennames.data;
 
-import net.minecraftforge.client.event.RenderNameTagEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
+import java.util.function.Function;
 
-import java.util.function.BiConsumer;
+public record Animation(String key, Function<Input, Return> renderer) {
+    public record Input(Player player, Component ogName, Component displayName, long tick) {
 
-public record Animation(String key, BiConsumer<RenderNameTagEvent, Long> renderer) {
-    public void render(RenderNameTagEvent event, long tick) {
-        renderer().accept(event, tick);
+    }
+
+    public record Return(Component name, boolean show) {
+
     }
 }
