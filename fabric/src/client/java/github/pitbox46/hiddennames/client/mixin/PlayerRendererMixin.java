@@ -19,6 +19,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.scores.Team;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -51,14 +52,16 @@ public abstract class PlayerRendererMixin extends LivingEntityRenderer<AbstractC
                 }
             }
 
+            Team team = player.getTeam();
+
             Animation.Return returnData = nameData.getAnimation().renderer().apply(new Animation.Input(
                     player,
                     component,
-                    HiddenNames.getCorrectedName(NameData.DATA.get(player.getUUID()).getDisplayName(), player.getTeam()),
+                    HiddenNames.getCorrectedName(NameData.DATA.get(player.getUUID()).getDisplayName(), team),
                     Minecraft.getInstance().level.getGameTime() + player.getId() * 21L
             ));
             if (returnData.show()) {
-                super.renderNameTag(player, returnData.name(), poseStack, multiBufferSource, i, partialTick);
+                super.renderNameTag(player, HiddenNames.getFullNameplate(returnData.name(), team), poseStack, multiBufferSource, i, partialTick);
             }
         }
     }

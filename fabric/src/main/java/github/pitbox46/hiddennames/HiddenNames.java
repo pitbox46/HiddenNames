@@ -28,6 +28,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.scores.PlayerTeam;
 import net.minecraft.world.scores.Team;
 import net.neoforged.fml.config.ModConfig;
 import org.apache.logging.log4j.LogManager;
@@ -130,5 +131,19 @@ public class HiddenNames implements ModInitializer {
             nameCopy = nameCopy.withColor(color.getColor());
         }
         return nameCopy;
+    }
+
+    public static Component getFullNameplate(Component name, @Nullable Team team) {
+        if (team instanceof PlayerTeam playerTeam) {
+            ChatFormatting chatformatting = team.getColor();
+            MutableComponent prefix = playerTeam.getPlayerPrefix().copy();
+            MutableComponent suffix = playerTeam.getPlayerSuffix().copy();
+            if (chatformatting != ChatFormatting.RESET) {
+                prefix.withStyle(chatformatting);
+                suffix.withStyle(chatformatting);
+            }
+            return Component.empty().append(prefix).append(name).append(suffix);
+        }
+        return name;
     }
 }

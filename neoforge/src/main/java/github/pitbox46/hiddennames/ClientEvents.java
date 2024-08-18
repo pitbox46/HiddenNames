@@ -4,10 +4,14 @@ import github.pitbox46.hiddennames.data.Animation;
 import github.pitbox46.hiddennames.data.NameData;
 import github.pitbox46.hiddennames.network.ClientPayloadHandler;
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.scores.PlayerTeam;
+import net.minecraft.world.scores.Team;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
@@ -48,14 +52,16 @@ public class ClientEvents {
                 return;
             }
 
+            Team team = player.getTeam();
+
             Animation.Return returnData = nameData.getAnimation().renderer().apply(new Animation.Input(
                     player,
                     event.getContent(),
-                    HiddenNames.getCorrectedName(NameData.DATA.get(player.getUUID()).getDisplayName(), player.getTeam()),
+                    HiddenNames.getCorrectedName(NameData.DATA.get(player.getUUID()).getDisplayName(), team),
                     Minecraft.getInstance().level.getGameTime() + player.getId() * 21L
             ));
             if (returnData.show()) {
-                event.setContent(returnData.name());
+                event.setContent(HiddenNames.getFullNameplate(returnData.name(), team));
             } else {
                 event.setCanRender(TriState.FALSE);
             }
