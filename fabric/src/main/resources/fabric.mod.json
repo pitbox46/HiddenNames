@@ -11,7 +11,7 @@
   "license": "MIT",
   "icon": "assets/hiddennames/icon.png",
 
-  "environment": "client",
+  "environment": "*",
   "entrypoints": {
     "client": ["github.pitbox46.hiddennames.client.HiddenNamesClient"],
     "main": ["github.pitbox46.hiddennames.HiddenNames"]
