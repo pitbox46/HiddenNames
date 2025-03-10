@@ -1,2 +1,7 @@
 /.idea/
 /.gradle/
+/build/
+/out/
+/repo/
+/run/
+/runs/
