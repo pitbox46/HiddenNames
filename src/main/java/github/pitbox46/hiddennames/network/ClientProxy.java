@@ -4,6 +4,7 @@ import github.pitbox46.hiddennames.data.NameData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.network.NetworkEvent;
 
 public class ClientProxy extends CommonProxy {
@@ -21,6 +22,9 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void handleBlocksHideUpdate(NetworkEvent.Context ctx, boolean bool) {
         blocksHide = bool;
+        if (ModList.get().isLoaded("entityculling")) {
+            dev.tr7zw.entityculling.EntityCullingModBase.instance.config.renderNametagsThroughWalls = !blocksHide;
+        }
     }
 
     @Override
