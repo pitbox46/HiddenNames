@@ -132,6 +132,7 @@ configurations {
 dependencies {
     //Couldn't get curse maven to work. May have been down today
     compileOnly "tr7zw:entityculling-neoforge-1.7.3-mc1.21"
+//    compileOnly 'curse.maven:entityculling-448233:6236200'
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.
