@@ -4,6 +4,7 @@ import github.pitbox46.hiddennames.data.NameData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.world.scores.PlayerTeam;
+import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.UUID;
@@ -17,6 +18,9 @@ public class ClientPayloadHandler {
 
     public static void handle(BlocksHidePacket packet, IPayloadContext ctx) {
         blocksHide = packet.blocksHide();
+        if (ModList.get().isLoaded("entityculling")) {
+            dev.tr7zw.entityculling.EntityCullingModBase.instance.config.renderNametagsThroughWalls = !blocksHide;
+        }
     }
 
     public static void handle(NameDataSyncPacket packet, IPayloadContext ctx) {

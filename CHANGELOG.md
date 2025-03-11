@@ -1,1 +1,1 @@
-- Use mc-publish
+- Add blocks hide compat with Entity Culling
