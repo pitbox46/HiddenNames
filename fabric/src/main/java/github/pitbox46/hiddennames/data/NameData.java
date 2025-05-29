@@ -85,7 +85,7 @@ public class NameData {
     public static NameData deserialize(JsonObject json) {
         UUID uuid = UUID.fromString(json.getAsJsonPrimitive("uuid").getAsString());
         Component component = COMPONENT_SERIALIZER.deserialize(json.get("displayName"), Component.class, null);
-        Animation animation = HiddenNames.ANIMATION_REGISTRY.get(ResourceLocation.parse(json.getAsJsonPrimitive("animation").getAsString()));
+        Animation animation = HiddenNames.ANIMATION_REGISTRY.getValue(ResourceLocation.parse(json.getAsJsonPrimitive("animation").getAsString()));
         return new NameData(uuid, component, animation);
     }
 

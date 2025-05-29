@@ -34,7 +34,7 @@ public class AnimationArgument implements ArgumentType<Animation> {
         if (!HiddenNames.ANIMATION_REGISTRY.keySet().contains(key)) {
             throw INVALID_ANIMATION.create(key, HiddenNames.ANIMATION_REGISTRY.keySet().stream().map(ResourceLocation::toString).toList());
         }
-        return HiddenNames.ANIMATION_REGISTRY.get(key);
+        return HiddenNames.ANIMATION_REGISTRY.getValue(key);
     }
 
     @Override

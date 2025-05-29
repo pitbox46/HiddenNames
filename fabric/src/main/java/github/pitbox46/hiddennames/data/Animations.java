@@ -8,7 +8,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import org.apache.commons.lang3.RandomStringUtils;
 
@@ -41,9 +41,9 @@ public class Animations {
                     color = TextColor.fromLegacyFormat(ChatFormatting.WHITE);
                 }
                 int primaryColor = color.getValue();
-                int red = FastColor.ARGB32.red(primaryColor);
-                int green = FastColor.ARGB32.green(primaryColor);
-                int blue = FastColor.ARGB32.blue(primaryColor);
+                int red = ARGB.red(primaryColor);
+                int green = ARGB.green(primaryColor);
+                int blue = ARGB.blue(primaryColor);
 
                 double sin = Math.sin((input.tick() % 360) * 2 * Math.PI / cycle);
                 double newRed = red + (amp * sin);
@@ -51,7 +51,7 @@ public class Animations {
                 double newBlue = blue + (amp * sin);
 
                 MutableComponent newName = displayName.copy();
-                newName.setStyle(displayName.getStyle().withColor(TextColor.fromRgb(FastColor.ARGB32.color(255, roundToByte(newRed), roundToByte(newGreen), roundToByte(newBlue)))));
+                newName.setStyle(displayName.getStyle().withColor(TextColor.fromRgb(ARGB.color(255, roundToByte(newRed), roundToByte(newGreen), roundToByte(newBlue)))));
 
                 return new Animation.Return(newName, true);
             }
@@ -121,10 +121,10 @@ public class Animations {
     private static TextColor blendColors(TextColor primary, TextColor secondary, float percent) {
         if (percent > 1) percent = 1;
         if (percent < 0) percent = 0;
-        int red = (int) (FastColor.ARGB32.red(primary.getValue()) * percent + FastColor.ARGB32.red(secondary.getValue()) * (1 - percent));
-        int green = (int) (FastColor.ARGB32.green(primary.getValue()) * percent + FastColor.ARGB32.green(secondary.getValue()) * (1 - percent));
-        int blue = (int) (FastColor.ARGB32.blue(primary.getValue()) * percent + FastColor.ARGB32.blue(secondary.getValue()) * (1 - percent));
+        int red = (int) (ARGB.red(primary.getValue()) * percent + ARGB.red(secondary.getValue()) * (1 - percent));
+        int green = (int) (ARGB.green(primary.getValue()) * percent + ARGB.green(secondary.getValue()) * (1 - percent));
+        int blue = (int) (ARGB.blue(primary.getValue()) * percent + ARGB.blue(secondary.getValue()) * (1 - percent));
 
-        return TextColor.fromRgb(FastColor.ARGB32.color(255, red, green, blue));
+        return TextColor.fromRgb(ARGB.color(255, red, green, blue));
     }
 }

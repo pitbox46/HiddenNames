@@ -11,17 +11,16 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LivingEntityRenderer.class)
-public class LivingEntityRendererMixin {
-    @Inject(method = "shouldShowName(Lnet/minecraft/world/entity/LivingEntity;)Z", at = @At(value = "RETURN", ordinal = 6), cancellable = true)
-    private void shouldShowName(LivingEntity livingEntity, CallbackInfoReturnable<Boolean> cir) {
+public abstract class LivingEntityRendererMixin {
+    @Inject(method = "shouldShowName(Lnet/minecraft/world/entity/LivingEntity;D)Z", at = @At(value = "RETURN", ordinal = 6), cancellable = true)
+    private void shouldShowName(LivingEntity livingEntity, double d, CallbackInfoReturnable<Boolean> cir) {
         Minecraft minecraft = Minecraft.getInstance();
         LocalPlayer localPlayer = minecraft.player;
-        boolean bl = !livingEntity.isInvisibleTo(localPlayer);
         cir.setReturnValue(
-                Minecraft.renderNames() &&
-                        (livingEntity != minecraft.getCameraEntity() || Config.SHOW_OWN.get()) &&
-                        bl &&
-                        !livingEntity.isVehicle()
+                Minecraft.renderNames()
+                        && (livingEntity != minecraft.getCameraEntity() || Config.SHOW_OWN.get())
+                        && !livingEntity.isInvisibleTo(localPlayer)
+                        && !livingEntity.isVehicle()
         );
     }
 }
